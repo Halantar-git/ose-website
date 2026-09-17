@@ -92,7 +92,12 @@ python -m http.server 8000
 ## Публикация на GitHub Pages
 
 1. Запушьте репозиторий в GitHub (ветка `main`).
-2. В репозитории: **Settings → Pages → Source → GitHub Actions**.
+2. Включите Pages: **Settings → Pages → Source → GitHub Actions**. Шаг обязательный — без него
+   `main` останется без сайта, а workflow упадёт на `configure-pages`. То же самое из командной строки:
+
+   ```sh
+   gh api -X POST repos/Halantar-git/ose-website/pages -f build_type=workflow
+   ```
 3. После пуша в `main` workflow `.github/workflows/pages.yml` соберёт и опубликует сайт.
    Адрес появится в **Settings → Pages**, обычно `https://<логин>.github.io/<репозиторий>/`.
 
@@ -110,6 +115,31 @@ git push -u origin main
 Пути в проекте относительные, поэтому сайт работает и в подкаталоге (`/<репозиторий>/`), и в корне домена.
 
 Куда именно лягут файлы: если сайт публикуется из **отдельного** репозитория, поменяйте адрес сайта в `canonical`, `og:url`, JSON-LD и `SITE_ROOT` — ссылки на приложение при этом останутся теми же. Если сайт ляжет **в подкаталог** репозитория приложения (например, `website/`), укажите этот путь в `.github/workflows/pages.yml`: `path: website`.
+
+### Если деплой падает
+
+**`Get Pages site failed. Please verify that the repository has Pages enabled and configured to build using GitHub Actions`**
+(или `HttpError: Not Found` на `GET /repos/<владелец>/<репозиторий>/pages`) — у репозитория просто не
+включён Pages, поэтому `actions/configure-pages` не может прочитать его конфигурацию. Включите Pages по
+шагу 2 выше и перезапустите упавший run (**Re-run all jobs**). Самому workflow для этого ничего не нужно.
+
+Включить Pages из workflow можно и без похода в настройки, но только с отдельным токеном: у
+`GITHUB_TOKEN` нет прав на создание сайта.
+
+```yaml
+      - name: Configure Pages
+        uses: actions/configure-pages@v6
+        with:
+          enablement: true
+          token: ${{ secrets.PAGES_TOKEN }}
+```
+
+Подойдёт PAT (classic со scope `repo` либо fine-grained с правом `Pages: write`) или токен GitHub App с
+`administration: write` и `pages: write` — он кладётся в секрет `PAGES_TOKEN`.
+
+Само предупреждение `Node 20 is being deprecated` к падению отношения не имеет: оно значит, что какая-то
+версия экшена ещё собрана под Node 20. В workflow версии подняты до собранных под Node 24 —
+`checkout@v7`, `configure-pages@v6`, `upload-pages-artifact@v5`, `deploy-pages@v5`.
 
 ### Свой домен
 
