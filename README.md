@@ -7,11 +7,10 @@
 ```
 index.html                     лендинг
 404.html                       страница «не найдено»
-.nojekyll                      отключает обработку Jekyll
+.nojekyll                      отключает обработку Jekyll при сборке из ветки
 assets/css/style.css           все стили: M3-токены + компоненты
 assets/js/main.js              тема, мобильное меню, ripple, мелочи
 assets/img/app.svg             иконка приложения (шапка, подвал, favicon)
-.github/workflows/pages.yml    автодеплой на GitHub Pages
 ```
 
 ## Откуда взялся контент
@@ -31,7 +30,7 @@ assets/img/app.svg             иконка приложения (шапка, п
 
 1. **Лицензия.** Везде указана GPL со ссылкой на файл `LICENSE` в репозитории приложения — в FAQ, блоке «Скачать», подвале и JSON-LD. Если файл называется иначе (`LICENSE.md`, `COPYING`) или у вас GPL-2.0 — поправьте ссылку и текст.
 2. **Ссылки уже проставлены** на `github.com/Halantar-git/open-stream-environment`: репозиторий, CHANGELOG, issues, `releases/latest` и README («Как установить»).
-3. **Адрес сайта.** В `canonical`, `og:url` и JSON-LD стоит `https://halantar-git.github.io/open-stream-environment/`, в `404.html` — `SITE_ROOT = '/open-stream-environment/'`. Если сайт будет в другом репозитории, поправьте эти четыре места.
+3. **Адрес сайта.** В `canonical`, `og:url` и JSON-LD стоит `https://halantar-git.github.io/open-stream-environment/`, в `404.html` — `SITE_ROOT = '/open-stream-environment/'`. Если сайт будет в другом репозитории или на своём домене, поправьте эти четыре места; при своём домене `SITE_ROOT` должен стать `'/'` — сайт ляжет в корень.
 4. **Скриншоты.** В hero и в секции `#screens` стоят заглушки-рамки. Положите файлы в `assets/img/` и замените разметку:
 
    ```html
@@ -91,14 +90,12 @@ python -m http.server 8000
 
 ## Публикация на GitHub Pages
 
-1. Запушьте репозиторий в GitHub (ветка `main`).
-2. Включите Pages: **Settings → Pages → Source → GitHub Actions**. Шаг обязательный — без него
-   `main` останется без сайта, а workflow упадёт на `configure-pages`. То же самое из командной строки:
+Сайт публикуется из ветки: GitHub берёт файлы из корня `main` и отдаёт их как статику. Отдельного
+workflow нет, а `.nojekyll` в корне отключает обработку Jekyll при сборке.
 
-   ```sh
-   gh api -X POST repos/Halantar-git/ose-website/pages -f build_type=workflow
-   ```
-3. После пуша в `main` workflow `.github/workflows/pages.yml` соберёт и опубликует сайт.
+1. Запушьте репозиторий в GitHub (ветка `main`).
+2. Включите Pages: **Settings → Pages → Source → Deploy from a branch**, ветка `main`, папка `/ (root)`.
+3. Дальше публикация идёт сама: каждый пуш в `main` пересобирает сайт из корня ветки.
    Адрес появится в **Settings → Pages**, обычно `https://<логин>.github.io/<репозиторий>/`.
 
 Первый пуш:
@@ -114,36 +111,27 @@ git push -u origin main
 
 Пути в проекте относительные, поэтому сайт работает и в подкаталоге (`/<репозиторий>/`), и в корне домена.
 
-Куда именно лягут файлы: если сайт публикуется из **отдельного** репозитория, поменяйте адрес сайта в `canonical`, `og:url`, JSON-LD и `SITE_ROOT` — ссылки на приложение при этом останутся теми же. Если сайт ляжет **в подкаталог** репозитория приложения (например, `website/`), укажите этот путь в `.github/workflows/pages.yml`: `path: website`.
-
-### Если деплой падает
-
-**`Get Pages site failed. Please verify that the repository has Pages enabled and configured to build using GitHub Actions`**
-(или `HttpError: Not Found` на `GET /repos/<владелец>/<репозиторий>/pages`) — у репозитория просто не
-включён Pages, поэтому `actions/configure-pages` не может прочитать его конфигурацию. Включите Pages по
-шагу 2 выше и перезапустите упавший run (**Re-run all jobs**). Самому workflow для этого ничего не нужно.
-
-Включить Pages из workflow можно и без похода в настройки, но только с отдельным токеном: у
-`GITHUB_TOKEN` нет прав на создание сайта.
-
-```yaml
-      - name: Configure Pages
-        uses: actions/configure-pages@v6
-        with:
-          enablement: true
-          token: ${{ secrets.PAGES_TOKEN }}
-```
-
-Подойдёт PAT (classic со scope `repo` либо fine-grained с правом `Pages: write`) или токен GitHub App с
-`administration: write` и `pages: write` — он кладётся в секрет `PAGES_TOKEN`.
-
-Само предупреждение `Node 20 is being deprecated` к падению отношения не имеет: оно значит, что какая-то
-версия экшена ещё собрана под Node 20. В workflow версии подняты до собранных под Node 24 —
-`checkout@v7`, `configure-pages@v6`, `upload-pages-artifact@v5`, `deploy-pages@v5`.
+Куда именно лягут файлы: если сайт публикуется из **отдельного** репозитория, поменяйте адрес сайта в `canonical`, `og:url`, JSON-LD и `SITE_ROOT` — ссылки на приложение при этом останутся теми же. Если сайт ляжет **в репозиторий приложения**, положите файлы в папку `docs/` и выберите её в настройках Pages: кроме корня GitHub Pages умеет публиковать только `docs/`.
 
 ### Свой домен
 
-Добавьте файл `CNAME` в корень репозитория с доменом (например, `ose.app`), настройте DNS по инструкции GitHub, затем укажите домен в **Settings → Pages → Custom domain**.
+Порядок важен: домен сначала добавляют в GitHub и только потом настраивают DNS. Если сделать наоборот,
+поддомен успеет занять кто-то другой.
+
+1. Верифицируйте домен через **Settings → Pages → Custom domain** — GitHub покажет TXT-запись для DNS.
+   Это защита от захвата домена.
+2. Впишите домен туда же и нажмите **Save**. При публикации из ветки GitHub сам закоммитит файл
+   `CNAME` в корень `main` — создавать его руками не нужно.
+3. У DNS-провайдера направьте домен на GitHub Pages:
+   - apex-домен (`ose.app`) — записи `A` на `185.199.108.153`, `185.199.109.153`, `185.199.110.153`,
+     `185.199.111.153` и, по желанию, `AAAA` на `2606:50c0:8000::153`, `2606:50c0:8001::153`,
+     `2606:50c0:8002::153`, `2606:50c0:8003::153`;
+   - поддомен (`www.ose.app`) — `CNAME` на `<логин>.github.io`.
+
+   Заодно заведите оба варианта: GitHub сам сделает редирект между apex и `www`.
+4. Когда DNS-записи разойдутся по интернету, включите **Enforce HTTPS**: сертификат может выдаваться до 24 часов.
+
+После этого поменяйте адрес сайта в `canonical`, `og:url`, JSON-LD и `SITE_ROOT`, а `SITE_ROOT` — на `'/'`.
 
 ## Мелочи, которые уже сделаны
 
