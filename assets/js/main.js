@@ -117,22 +117,90 @@
   var yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
-  /* ---------- Версия из последнего релиза приложения ----------
-     В разметке стоит версия на момент вёрстки: если запрос не пройдёт (нет сети,
-     исчерпан лимит неавторизованных запросов к API), страница останется с ней. */
+  /* ---------- Версия и сборки из последнего релиза приложения ----------
+     В разметке стоят значения на момент вёрстки: если запрос не пройдёт (нет сети,
+     исчерпан лимит неавторизованных запросов к API), страница останется с ними. */
 
   var RELEASES_LATEST = 'https://api.github.com/repos/Halantar-git/open-stream-environment/releases/latest';
   var MONTHS = [
     'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
     'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
   ];
+  var OS_KEYS = ['windows', 'linux', 'macos'];
+  var OS_NAMES = { windows: 'Windows', linux: 'Linux', macos: 'macOS' };
+  /* Файлы релиза под каждую систему — в порядке предпочтения */
+  var OS_ASSETS = {
+    windows: [/-setup\.exe$/i, /\.exe$/i],
+    linux: [/\.AppImage$/i, /\.deb$/i],
+    macos: [/\.dmg$/i, /-mac\.zip$/i]
+  };
 
   var versionSlots = document.querySelectorAll('[data-release-version]');
   var dateSlots = document.querySelectorAll('[data-release-date]');
+  var primaryDownload = document.querySelector('[data-download-primary]');
+  var osDownloads = document.querySelectorAll('[data-download-os]');
 
-  if ((versionSlots.length || dateSlots.length) && window.fetch) {
+  if ((versionSlots.length || dateSlots.length || osDownloads.length) && window.fetch) {
     var fill = function (nodes, text) {
       for (var i = 0; i < nodes.length; i++) nodes[i].textContent = text;
+    };
+
+    /* Систему смотрим в браузере: в Chromium есть userAgentData, у остальных — строка UA */
+    var detectOS = function () {
+      var ua = navigator.userAgent || '';
+      var platform = navigator.platform || '';
+      var data = navigator.userAgentData;
+
+      if (data && data.platform) {
+        if (data.platform === 'Windows') return 'windows';
+        if (data.platform === 'macOS') return 'macos';
+        if (data.platform === 'Linux') return 'linux';
+        return '';
+      }
+
+      /* iPad в iPadOS 13+ представляется как Macintosh, ChromeOS тянет за Linux —
+         но на них не запустить ни один из файлов релиза */
+      if (/iPad|iPhone|iPod|Android|CrOS/i.test(ua)) return '';
+      if (/Windows/i.test(ua) || /^Win/i.test(platform)) return 'windows';
+      if (/Mac OS X|Macintosh/i.test(ua) || /^Mac/i.test(platform)) return 'macos';
+      if (/Linux|X11|CrOS/i.test(ua) || /^Linux/i.test(platform)) return 'linux';
+      return '';
+    };
+
+    var findAsset = function (assets, patterns) {
+      for (var p = 0; p < patterns.length; p++) {
+        for (var i = 0; i < assets.length; i++) {
+          if (patterns[p].test(assets[i].name || '')) return assets[i];
+        }
+      }
+      return null;
+    };
+
+    /* Ссылки на файлы — во все кнопки; свою систему отдаём главной кнопке */
+    var applyDownloadLinks = function (assets) {
+      var links = {};
+      var os = detectOS();
+      var i;
+      var asset;
+
+      for (i = 0; i < OS_KEYS.length; i++) {
+        asset = findAsset(assets, OS_ASSETS[OS_KEYS[i]]);
+        if (asset) links[OS_KEYS[i]] = asset.browser_download_url;
+      }
+
+      for (i = 0; i < osDownloads.length; i++) {
+        var url = links[osDownloads[i].getAttribute('data-download-os')];
+        if (url) osDownloads[i].href = url;
+      }
+
+      if (os && links[os] && primaryDownload) {
+        primaryDownload.href = links[os];
+        primaryDownload.textContent = 'Скачать для ' + OS_NAMES[os];
+
+        for (i = 0; i < osDownloads.length; i++) {
+          if (osDownloads[i].getAttribute('data-download-os') === os) osDownloads[i].hidden = true;
+        }
+      }
     };
 
     window.fetch(RELEASES_LATEST, { headers: { accept: 'application/vnd.github+json' } })
@@ -152,6 +220,8 @@
         if (parts.length === 3 && month) {
           fill(dateSlots, Number(parts[2]) + ' ' + month + ' ' + parts[0]);
         }
+
+        applyDownloadLinks(release.assets || []);
 
         /* Тот же номер — в разметке для поисковиков */
         var ld = document.querySelector('script[type="application/ld+json"]');
