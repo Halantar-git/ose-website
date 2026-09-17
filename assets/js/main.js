@@ -127,7 +127,6 @@
     'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
   ];
   var OS_KEYS = ['windows', 'linux', 'macos'];
-  var OS_NAMES = { windows: 'Windows', linux: 'Linux', macos: 'macOS' };
   /* Файлы релиза под каждую систему — в порядке предпочтения */
   var OS_ASSETS = {
     windows: [/-setup\.exe$/i, /\.exe$/i],
@@ -137,7 +136,6 @@
 
   var versionSlots = document.querySelectorAll('[data-release-version]');
   var dateSlots = document.querySelectorAll('[data-release-date]');
-  var primaryDownload = document.querySelector('[data-download-primary]');
   var osDownloads = document.querySelectorAll('[data-download-os]');
 
   if ((versionSlots.length || dateSlots.length || osDownloads.length) && window.fetch) {
@@ -176,26 +174,20 @@
       return null;
     };
 
-    /* Главная кнопка берёт файл у кнопки своей системы: запрос к API для этого не нужен,
-       адреса уже лежат в разметке — их подставляет деплой (.github/stamp-release.py) */
-    var wirePrimary = function () {
-      if (!primaryDownload) return;
-
+    /* Кнопку системы посетителя выделяем заливкой; запрос к API для этого не нужен.
+       btn-ghost убираем: в стилях он идёт после btn-primary и перебил бы заливку */
+    var highlightOS = function () {
       var os = detectOS();
       if (!os) return;
 
       for (var i = 0; i < osDownloads.length; i++) {
-        var link = osDownloads[i];
-        if (link.getAttribute('data-download-os') !== os) continue;
-
-        primaryDownload.href = link.href;
-        primaryDownload.textContent = 'Скачать для ' + OS_NAMES[os];
-        link.hidden = true;
-        return;
+        if (osDownloads[i].getAttribute('data-download-os') !== os) continue;
+        osDownloads[i].classList.remove('btn-ghost');
+        osDownloads[i].classList.add('btn-primary');
       }
     };
 
-    wirePrimary();
+    highlightOS();
 
     /* Освежение поверх деплоя: если запрос прошёл, берём адреса из самого релиза */
     var applyDownloadLinks = function (assets) {
@@ -213,8 +205,6 @@
           }
         }
       }
-
-      wirePrimary();
     };
 
     window.fetch(RELEASES_LATEST, { headers: { accept: 'application/vnd.github+json' } })

@@ -702,10 +702,9 @@ html.is-lightbox-open { overflow: hidden; }
 .cta-panel .btn-ghost,
 .cta-panel .btn-ghost:hover { box-shadow: none; }
 
-/* Ряд кнопок под остальные системы; глифы брендов залиты currentColor (Simple Icons, CC0) */
-.os-row { margin-top: 12px; }
+/* Кнопки систем в блоке «Скачать»; глифы брендов залиты currentColor (Simple Icons, CC0) */
+.os-row { margin-top: 28px; }
 .btn-os svg { flex: 0 0 auto; width: 20px; height: 20px; }
-.btn[hidden] { display: none; }
 
 /* ---------- Подвал ---------- */
 .site-footer {

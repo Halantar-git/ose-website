@@ -34,10 +34,9 @@ ASSETS = {
     'macos': [r'\.dmg$', r'-mac\.zip$'],
 }
 
-# Кнопки систем в нижнем ряду: href стоит до data-атрибута.
-# Главную кнопку скрипт не трогает: какая система у посетителя, знает только браузер,
-# поэтому её адрес выбирает main.js из кнопки нужной системы.
-SYSTEM = r'(<a class="btn btn-ghost btn-os" href=")[^"]*("[^>]*data-download-os="%s")'
+# Кнопки систем: href стоит до data-атрибута, а список классов может меняться
+# (btn-lg и т.п.), поэтому ловим по btn-os, а не по полному class.
+SYSTEM = r'(<a class="[^"]*btn-os[^"]*" href=")[^"]*("[^>]*data-download-os="%s")'
 
 
 def load_release(path=None):
@@ -74,6 +73,8 @@ def stamp(html, release):
         html, count = re.subn(r'(<span data-release-version>)[^<]*', r'\g<1>' + version, html)
         if count:
             changes.append('версия %s (в %d местах)' % (version, count))
+        else:
+            changes.append('версия — места в разметке не нашлось')
 
     parts = str(release.get('published_at') or '')[:10].split('-')
     month = MONTHS[int(parts[1]) - 1] if len(parts) == 3 and parts[1].isdigit() and 1 <= int(parts[1]) <= 12 else ''
@@ -83,6 +84,8 @@ def stamp(html, release):
         html, count = re.subn(r'(<span data-release-date>)[^<]*', r'\g<1>' + date, html)
         if count:
             changes.append('дата %s (в %d местах)' % (date, count))
+        else:
+            changes.append('дата — места в разметке не нашлось')
 
     assets = release.get('assets') or []
     for key, patterns in ASSETS.items():
@@ -96,6 +99,8 @@ def stamp(html, release):
         html, count = re.subn(SYSTEM % key, r'\g<1>' + url + r'\g<2>', html)
         if count:
             changes.append('%s → %s' % (key, asset['name']))
+        else:
+            changes.append('%s — кнопки в разметке не нашлось' % key)
 
     return html, changes
 
