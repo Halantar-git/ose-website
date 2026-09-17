@@ -24,6 +24,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
+      # Подставляет в index.html версию, дату и адреса файлов последнего релиза:
+      # тогда кнопки скачивания у посетителя не зависят от лимитов API
+      - name: Stamp release version and links
+        continue-on-error: true
+        run: python3 .github/stamp-release.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Configure Pages
         uses: actions/configure-pages@v6
 

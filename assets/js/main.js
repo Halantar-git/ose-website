@@ -176,31 +176,45 @@
       return null;
     };
 
-    /* Ссылки на файлы — во все кнопки; свою систему отдаём главной кнопке */
-    var applyDownloadLinks = function (assets) {
-      var links = {};
+    /* Главная кнопка берёт файл у кнопки своей системы: запрос к API для этого не нужен,
+       адреса уже лежат в разметке — их подставляет деплой (.github/stamp-release.py) */
+    var wirePrimary = function () {
+      if (!primaryDownload) return;
+
       var os = detectOS();
+      if (!os) return;
+
+      for (var i = 0; i < osDownloads.length; i++) {
+        var link = osDownloads[i];
+        if (link.getAttribute('data-download-os') !== os) continue;
+
+        primaryDownload.href = link.href;
+        primaryDownload.textContent = 'Скачать для ' + OS_NAMES[os];
+        link.hidden = true;
+        return;
+      }
+    };
+
+    wirePrimary();
+
+    /* Освежение поверх деплоя: если запрос прошёл, берём адреса из самого релиза */
+    var applyDownloadLinks = function (assets) {
       var i;
+      var j;
       var asset;
 
       for (i = 0; i < OS_KEYS.length; i++) {
         asset = findAsset(assets, OS_ASSETS[OS_KEYS[i]]);
-        if (asset) links[OS_KEYS[i]] = asset.browser_download_url;
-      }
+        if (!asset) continue;
 
-      for (i = 0; i < osDownloads.length; i++) {
-        var url = links[osDownloads[i].getAttribute('data-download-os')];
-        if (url) osDownloads[i].href = url;
-      }
-
-      if (os && links[os] && primaryDownload) {
-        primaryDownload.href = links[os];
-        primaryDownload.textContent = 'Скачать для ' + OS_NAMES[os];
-
-        for (i = 0; i < osDownloads.length; i++) {
-          if (osDownloads[i].getAttribute('data-download-os') === os) osDownloads[i].hidden = true;
+        for (j = 0; j < osDownloads.length; j++) {
+          if (osDownloads[j].getAttribute('data-download-os') === OS_KEYS[i]) {
+            osDownloads[j].href = asset.browser_download_url;
+          }
         }
       }
+
+      wirePrimary();
     };
 
     window.fetch(RELEASES_LATEST, { headers: { accept: 'application/vnd.github+json' } })
