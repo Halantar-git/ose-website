@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!--
+  ЧТО ЗАМЕНИТЬ ПЕРЕД ПУБЛИКАЦИЕЙ:
+  1. Тексты в квадратных скобках [...] — это скриншоты и ссылка на политику конфиденциальности.
+  2. canonical, og:url и JSON-LD указывают на https://halantar-git.github.io/open-stream-environment/ — поменяйте, если переименуете репозиторий.
+  3. Скриншоты: см. комментарии в секции .shots и README.md.
+-->
+
+<title>Open Stream Environment — визуальный редактор стрим-оверлея для OBS</title>
+<meta name="description" content="Стрим-оверлей и визуальный редактор раскладки на Electron: алерты, чат, цель доната, сцены и 3D-виджеты. Отдаётся в OBS как Browser Source.">
+<link rel="canonical" href="https://halantar-git.github.io/open-stream-environment/">
+
+<meta name="theme-color" content="#F9F9FF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="assets/img/app.svg" type="image/svg+xml">
+<!-- iOS не читает SVG в apple-touch-icon: при желании добавьте PNG 180x180 -->
+<link rel="apple-touch-icon" href="assets/img/app.svg">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Open Stream Environment">
+<meta property="og:title" content="Open Stream Environment — визуальный редактор стрим-оверлея для OBS">
+<meta property="og:description" content="Стрим-оверлей в стиле Material Design 3 и редактор раскладки в стиле drag-and-drop. Отдаётся в OBS как Browser Source.">
+<meta property="og:url" content="https://halantar-git.github.io/open-stream-environment/">
+<!-- TODO: положить файл assets/img/og.png (1200x630) и раскомментировать -->
+<!-- <meta property="og:image" content="https://halantar-git.github.io/open-stream-environment/assets/img/og.png"> -->
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="stylesheet" href="assets/css/style.css">
+
+<!-- Тема выставляется до отрисовки, чтобы не было вспышки светлого фона -->
+<script>
+  try {
+    var t = localStorage.getItem('ose-theme');
+    if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+  } catch (e) {}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Open Stream Environment",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Windows, Linux, macOS",
+  "softwareVersion": "3.2.1",
+  "author": { "@type": "Person", "name": "Halantar" },
+  "description": "Стрим-оверлей в стиле Material Design 3 и визуальный редактор раскладки на Electron: алерты, чат, цель доната, сцены, темы и 3D-виджеты.",
+  "license": "https://github.com/Halantar-git/open-stream-environment/blob/HEAD/LICENSE",
+  "softwareRequirements": "Node.js 22.12+ и Electron 43",
+  "downloadUrl": "https://github.com/Halantar-git/open-stream-environment/releases/latest",
+  "url": "https://halantar-git.github.io/open-stream-environment/",
+  "sameAs": "https://github.com/Halantar-git/open-stream-environment"
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Перейти к содержимому</a>
+
+<header class="site-header" id="header">
+  <div class="wrap header-inner">
+    <a class="brand" href="./" aria-label="Open Stream Environment (OSE) — на главную">
+      <img class="brand-mark" src="assets/img/app.svg" alt="" width="32" height="32">
+      <span class="brand-name">OSE</span>
+    </a>
+
+    <nav class="nav" id="nav" aria-label="Основная навигация">
+      <a href="#features">Возможности</a>
+      <a href="#screens">Скриншоты</a>
+      <a href="#how">Быстрый старт</a>
+      <a href="#faq">Вопросы</a>
+      <a class="btn btn-primary nav-cta" href="#download">Скачать</a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Переключить тему">
+        <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M18.7 5.3l-1.8 1.8M7.1 16.9l-1.8 1.8"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg>
+      </button>
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="Меню" aria-expanded="false" aria-controls="nav">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <p class="badge">Версия 3.2.1 · сборка от 16 сентября 2026</p>
+        <h1>Стрим-оверлей для OBS, который собирается мышью</h1>
+        <p class="lead">Open Stream Environment — приложение на Electron: визуальный редактор раскладки в стиле drag-and-drop, локальный сервер и страница оверлея, которую вы добавляете в OBS как Browser Source. Алерты, чат, цель доната, сцены, темы и 3D-виджеты настраиваются в одном окне — данные и токены остаются на вашем компьютере.</p>
+
+        <div class="cta-row">
+          <a class="btn btn-primary btn-lg" href="#download">Скачать</a>
+          <a class="btn btn-ghost btn-lg" href="#features">Возможности</a>
+        </div>
+
+        <ul class="hero-points">
+          <li>Drag-and-drop, ресайз, слои и свойства</li>
+          <li>Отдаётся в OBS обычной веб-страницей</li>
+          <li>Работает локально, секреты зашифрованы</li>
+        </ul>
+      </div>
+
+      <!-- Визуал в hero. Замените на реальный скриншот:
+           <img src="assets/img/hero.png" alt="Редактор раскладки Open Stream Environment" width="1600" height="1000"> -->
+      <div class="hero-visual">
+        <div class="mock">
+          <div class="mock-bar"><span></span><span></span><span></span></div>
+          <div class="mock-body">
+            <p class="mock-label">[Скриншот редактора: канвас, библиотека виджетов, свойства справа]</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FEATURES ============ -->
+  <section class="section" id="features">
+    <div class="wrap">
+      <header class="section-head">
+        <h2>Возможности</h2>
+        <p class="section-sub">Всё, из чего состоит эфир: раскладка, алерты, сцены, темы и чат.</p>
+      </header>
+
+      <div class="grid grid-3">
+        <article class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16"/><path d="M11.5 11.5 14.7 18.8l1.3-2.9 2.9-1.3-7.4-3.1Z"/></svg></div>
+          <h3>Редактор в стиле Figma</h3>
+          <p>Канвас 16:9 с превью оверлея, библиотека виджетов слева, слои и свойства справа. Перетаскивание, ресайз, сетка с прилипанием, пропорции от 16:9 до 9:16 и пресеты раскладки.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9.5a6 6 0 0 1 12 0c0 4.5 2 5.5 2 5.5H4s2-1 2-5.5Z"/><path d="M10 18.5a2 2 0 0 0 4 0"/></svg></div>
+          <h3>Единая очередь алертов</h3>
+          <p>Очередью управляет сервер, а не страница OBS: Twitch, DonationAlerts и Колесо идут в общий поток. Пауза, «показать сейчас», склейка донатов одного зрителя; пауза переживает перезапуск.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 3.5 8 12 12.5 20.5 8 12 3.5Z"/><path d="M4 12.5 12 17l8-4.5"/><path d="M4 16.5 12 21l8-4.5"/></svg></div>
+          <h3>Сцены и пульты</h3>
+          <p>Полноэкранные сцены начала, перерыва, разговора, окончания, колеса и голосования. Управление с телефона через Web Remote, плагин Stream Deck и OBS WebSocket.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 1 0 0 17c1.7 0 2.4-.9 2.4-1.8 0-1.6-1.3-1.9-1.3-2.8 0-.8.7-1.4 1.6-1.4h1.8a4.5 4.5 0 0 0 4.5-4.5c0-3.6-3.9-6.5-9-6.5Z"/><circle cx="8.3" cy="10.2" r="1"/><circle cx="12" cy="7.8" r="1"/><circle cx="15.8" cy="10.2" r="1"/></svg></div>
+          <h3>Темы, включая 3D</h3>
+          <p>Material You, Orbital, Pixel Perfect, Elite и Nuclear, у части — неоновые 3D-виджеты. Своя тема собирается в отдельном редакторе: палитра, формы панелей, шрифты, свечение и проверка контраста по WCAG.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 12c0 4-3.8 7.2-8.5 7.2-1 0-2-.15-2.9-.42L4 20.5l1.4-3.4A6.9 6.9 0 0 1 3.5 12c0-4 3.8-7.2 8.5-7.2s8.5 3.2 8.5 7.2Z"/></svg></div>
+          <h3>Чат, бот и модерация</h3>
+          <p>Окно чата Twitch с отправкой сообщений, встроенный бот с командами и таймерами, автомодерация: ссылки, чёрный список слов, капс и смайлы, варны до бана.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 4.5 6.8v5.4c0 4 3.1 7.2 7.5 8.3 4.4-1.1 7.5-4.3 7.5-8.3V6.8L12 3.5Z"/><path d="M9.3 12.2l2 2 3.5-4"/></svg></div>
+          <h3>Локально и приватно</h3>
+          <p>Сервер Express и WebSocket работает на вашей машине, наружу ничего не уходит. Токены Twitch, DonationAlerts и YouTube шифруются системным хранилищем ОС, настройки пишутся атомарно и с бэкапами.</p>
+        </article>
+      </div>
+
+      <div class="chips-block">
+        <p class="chips-caption">Виджеты, которые можно положить на канвас</p>
+        <ul class="chips">
+          <li class="chip">Алерты</li>
+          <li class="chip">Цель доната</li>
+          <li class="chip">Чат Twitch</li>
+          <li class="chip">Последние события</li>
+          <li class="chip">Счётчик</li>
+          <li class="chip">Соц. баннер</li>
+          <li class="chip">Таймер Executive Hangar</li>
+          <li class="chip">Визуализатор микрофона</li>
+          <li class="chip">Колесо Фортуны</li>
+          <li class="chip">Розыгрыш участников</li>
+          <li class="chip">Голосование</li>
+          <li class="chip">Свой виджет</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREENSHOTS ============ -->
+  <section class="section section-soft" id="screens">
+    <div class="wrap">
+      <header class="section-head">
+        <h2>Скриншоты</h2>
+        <p class="section-sub">Редактор, настройки, сцены и 3D-виджеты.</p>
+      </header>
+
+      <!-- Замените каждый .shot на:
+           <img class="shot" src="assets/img/screen-1.png" alt="[Что на экране]" loading="lazy"> -->
+      <div class="shots">
+        <div class="shot"><span>[Редактор: канвас, библиотека, свойства]</span></div>
+        <div class="shot"><span>[Настройки интеграций]</span></div>
+        <div class="shot"><span>[3D-виджет или сцена]</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOW ============ -->
+  <section class="section" id="how">
+    <div class="wrap">
+      <header class="section-head">
+        <h2>Быстрый старт</h2>
+        <p class="section-sub">От <code>npm install</code> до оверлея в OBS — три шага.</p>
+      </header>
+
+      <ol class="steps">
+        <li>
+          <span class="step-num">1</span>
+          <h3>Установите</h3>
+          <p>Нужен Node.js 22.12+. Выполните <code>npm install</code>, затем <code>npm start</code> — откроется окно панели управления.</p>
+        </li>
+        <li>
+          <span class="step-num">2</span>
+          <h3>Добавьте оверлей в OBS</h3>
+          <p>Источники → + → Browser Source: адрес <code>http://localhost:8710/overlay/overlay.html</code>, разрешение 1920×1080, FPS источника 30. Фон прозрачный из коробки.</p>
+        </li>
+        <li>
+          <span class="step-num">3</span>
+          <h3>Соберите раскладку</h3>
+          <p>Перетащите виджеты из библиотеки, задайте сетку и пропорции канваса, сохраните раскладку пресетом. Сцены и заставки — на своих вкладках.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="section section-soft" id="faq">
+    <div class="wrap wrap-narrow">
+      <header class="section-head">
+        <h2>Частые вопросы</h2>
+      </header>
+
+      <div class="faq">
+        <details>
+          <summary>Что нужно, чтобы запустить?</summary>
+          <p>Из исходников — Node.js 22.12+: <code>npm install</code>, затем <code>npm start</code>. Для обычного использования возьмите готовую сборку: приложение на Electron 43 работает на Windows, Linux и macOS.</p>
+        </details>
+        <details>
+          <summary>Как добавить оверлей в OBS?</summary>
+          <p>Оверлей — обычная веб-страница, поэтому в OBS это Browser Source: адрес <code>http://localhost:8710/overlay/overlay.html</code>, разрешение 1920×1080, FPS источника 30. Включите «Завершать работу источника, когда он не отображается» — тогда скрытые сцены полностью засыпают.</p>
+        </details>
+        <details>
+          <summary>Нужны ли аккаунты Twitch и DonationAlerts?</summary>
+          <p>Чат читается анонимно — достаточно имени канала. Алерты о фоллоу, подписках, чирах и донатах требуют своих приложений: Client ID и Client Secret с dev.twitch.tv и donationalerts.com плюс авторизация. Отправка сообщений в чат тоже требует подключённого Twitch.</p>
+        </details>
+        <details>
+          <summary>Где хранятся настройки и история?</summary>
+          <p>Только на вашем компьютере: <code>config.json</code> и <code>local-db.json</code> в каталоге данных (для установщика — <code>%APPDATA%\Open Stream Environment</code>, для portable — рядом с exe). История событий и чата — в append-only <code>local-db.jsonl</code> и <code>local-db.chat.jsonl</code>. Рядом ведутся бэкапы <code>.bak.0…2</code>, а битый файл уезжает в карантин и поднимается из копии.</p>
+        </details>
+        <details>
+          <summary>Донаты не приходят — где смотреть?</summary>
+          <p>В панель «DA» в шапке: состояние подключения, здоровье токена, быстрые действия и живой журнал только DonationAlerts. Там же кнопка «Подтянуть пропущенные» — ей нужно право <code>oauth-donation-index</code>, а уже выданные токены его не получают, поэтому приложение в кабинете DonationAlerts придётся удалить и создать заново.</p>
+        </details>
+        <details>
+          <summary>Будет ли оверлей виден в полноэкранной игре?</summary>
+          <p>HUD-редактирование и «чат поверх игры» работают поверх окон и Borderless Window. Эксклюзивный полноэкранный режим игры перекрывает оверлей.</p>
+        </details>
+        <details>
+          <summary>Сколько стоит приложение?</summary>
+          <p>Бесплатно. Проект открытый и распространяется под лицензией GPL — код, сборки и история изменений лежат в <a href="https://github.com/Halantar-git/open-stream-environment">репозитории на GitHub</a>.</p>
+        </details>
+        <details>
+          <summary>Как сообщить об ошибке?</summary>
+          <p>Откройте issue в <a href="https://github.com/Halantar-git/open-stream-environment/issues">репозитории на GitHub</a> и приложите отчёт из кнопки «Сохранить отчёт» (или <code>GET /support-bundle</code>) — секретов в нём нет.</p>
+        </details>
+        <details>
+          <summary>Где смотреть историю версий?</summary>
+          <p>В <a href="https://github.com/Halantar-git/open-stream-environment/blob/HEAD/CHANGELOG.md">CHANGELOG.md</a> репозитория. Текущая версия — 3.2.1 (16 сентября 2026).</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DOWNLOAD ============ -->
+  <section class="section" id="download">
+    <div class="wrap">
+      <div class="cta-panel">
+        <h2>Скачать Open Stream Environment</h2>
+        <p>Версия 3.2.1 (16 сентября 2026). Установщик NSIS и portable-exe для Windows, сборки для Linux и macOS — в GitHub Releases. Бесплатно, под лицензией GPL.</p>
+
+        <div class="cta-row cta-row-center">
+          <a class="btn btn-primary btn-lg" href="https://github.com/Halantar-git/open-stream-environment/releases/latest">Скачать сборку</a>
+          <a class="btn btn-ghost btn-lg" href="https://github.com/Halantar-git/open-stream-environment#readme">Установка из исходников</a>
+        </div>
+
+        <p class="cta-note">Сборки не подписаны: macOS попросит подтвердить первый запуск, Windows может показать предупреждение SmartScreen. Автообновление видит только опубликованные релизы.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <img class="brand-mark" src="assets/img/app.svg" alt="" width="24" height="24">
+      <span>Open Stream Environment</span>
+    </div>
+
+    <nav class="footer-nav" aria-label="Ссылки в подвале">
+      <a href="#features">Возможности</a>
+      <a href="#faq">Вопросы</a>
+      <a href="https://github.com/Halantar-git/open-stream-environment">GitHub</a>
+      <a href="https://github.com/Halantar-git/open-stream-environment/blob/HEAD/CHANGELOG.md">История версий</a>
+      <a href="https://github.com/Halantar-git/open-stream-environment/issues">Сообщить об ошибке</a>
+      <a href="#">[Политика конфиденциальности]</a>
+    </nav>
+
+    <p class="footer-legal">© <span id="year">2026</span> Halantar · Open Stream Environment · <a href="https://github.com/Halantar-git/open-stream-environment/blob/HEAD/LICENSE">лицензия GPL</a></p>
+  </div>
+</footer>
+
+<script src="assets/js/main.js" defer></script>
+</body>
+</html>

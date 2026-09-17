@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Страница не найдена — Open Stream Environment</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#F9F9FF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="assets/img/app.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/style.css">
+<script>
+  try {
+    var t = localStorage.getItem('ose-theme');
+    if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+  } catch (e) {}
+</script>
+</head>
+<body>
+
+<main class="section">
+  <div class="wrap wrap-narrow text-center">
+    <p class="badge">Ошибка 404</p>
+    <h1>Такой страницы нет</h1>
+    <p class="lead mx-auto">Возможно, ссылка устарела или в адресе опечатка.</p>
+
+    <div class="cta-row cta-row-center">
+      <a class="btn btn-primary btn-lg" id="home-link" href="./">На главную</a>
+    </div>
+  </div>
+</main>
+
+<script>
+  /* GitHub Pages отдаёт эту страницу на любой глубине URL, поэтому «./»
+     может указывать не в корень сайта. Здесь — корень сайта:
+     для project pages это «/<имя-репозитория>/», для user pages — «/».
+     TODO: поменяйте, если сайт переедет в другой репозиторий. */
+  var SITE_ROOT = '/open-stream-environment/';
+  var link = document.getElementById('home-link');
+  if (link && SITE_ROOT !== './') link.setAttribute('href', SITE_ROOT);
+</script>
+
+<script>
+  try {
+    var t = localStorage.getItem('ose-theme');
+    if (t === 'dark') {
+      document.querySelectorAll('meta[name="theme-color"]').forEach(function (m) {
+        m.removeAttribute('media');
+        m.setAttribute('content', '#111318');
+      });
+    }
+  } catch (e) {}
+</script>
+
+</body>
+</html>
