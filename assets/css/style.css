@@ -488,20 +488,79 @@ a:hover { text-decoration: underline; }
 /* ---------- Скриншоты ---------- */
 .shots { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(16px, 2.2vw, 24px); align-items: start; }
 .shot {
+  position: relative;
   display: grid;
   place-items: center;
-  aspect-ratio: 16 / 10;
   border-radius: var(--md-sys-shape-corner-medium);
   background: var(--md-sys-color-surface-container);
   color: var(--md-sys-color-on-surface-variant);
   font: var(--md-sys-typescale-body-medium-font);
   letter-spacing: var(--md-sys-typescale-body-medium-tracking);
   overflow: hidden;
+  cursor: zoom-in;
 }
-/* Скриншот не режем: кадр важнее ровной сетки, поэтому сбрасываем aspect-ratio рамки-плейсхолдера */
-img.shot { width: 100%; height: auto; aspect-ratio: auto; object-fit: cover; }
+/* Пропорции задаёт сама картинка: рамка с aspect-ratio резала бы 16:9 по бокам */
+.shot img { width: 100%; height: auto; }
 /* Вертикальный скриншот (пульт на телефоне) в полную колонку был бы слишком высоким */
-img.shot--tall { max-width: 55%; justify-self: center; }
+.shot--tall { max-width: 55%; justify-self: center; }
+
+/* State layer рамки — по тем же токенам, что у кнопок */
+.shot::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--md-sys-color-on-surface);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+.shot:hover::before { opacity: var(--md-sys-state-hover-opacity); }
+.shot:focus-visible::before { opacity: var(--md-sys-state-focus-opacity); }
+.shot:active::before { opacity: var(--md-sys-state-pressed-opacity); }
+
+/* Ссылка вокруг скриншота в hero */
+.shot-link { display: block; cursor: zoom-in; }
+
+/* ---------- Просмотр скриншота ---------- */
+html.is-lightbox-open { overflow: hidden; }
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  place-items: center;
+  padding: clamp(16px, 3vw, 40px);
+  background: color-mix(in srgb, var(--md-sys-color-scrim) 88%, transparent);
+  animation: ose-lightbox-in var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate);
+}
+.lightbox[hidden] { display: none; }
+
+.lightbox-img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: var(--md-sys-shape-corner-large);
+  box-shadow: var(--md-sys-elevation-level3);
+  animation: ose-lightbox-img-in var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: clamp(8px, 1.5vw, 20px);
+  right: clamp(8px, 1.5vw, 20px);
+  color: var(--md-sys-color-inverse-on-surface);
+}
+/* Перебиваем .icon-btn:hover: на тёмном фоне крестик должен оставаться светлым */
+.lightbox-close:hover, .lightbox-close:active { color: var(--md-sys-color-inverse-on-surface); }
+
+@keyframes ose-lightbox-in {
+  from { opacity: 0; }
+}
+@keyframes ose-lightbox-img-in {
+  from { opacity: 0; transform: scale(.96); }
+}
 
 /* ---------- Шаги ---------- */
 .steps {
@@ -722,7 +781,6 @@ code {
 @media (max-width: 600px) {
   .wrap { padding-inline: 16px; }
   .grid-3 { grid-template-columns: 1fr; }
-  .shot { aspect-ratio: 16 / 11; }
   .hero-points { flex-direction: column; gap: 8px; }
   .nav { left: 8px; right: 8px; }
 }
@@ -732,5 +790,6 @@ code {
   html { scroll-behavior: auto; }
   .md-ripple { display: none; }
   .card:hover { box-shadow: var(--md-sys-elevation-level1); }
-  .faq summary::after, .site-header { transition: none; }
+  .faq summary::after, .site-header, .shot::before { transition: none; }
+  .lightbox, .lightbox-img { animation: none; }
 }

@@ -1,4 +1,4 @@
-/* OSE — лендинг: тема, мобильное меню, состояние шапки, год в подвале */
+/* OSE — лендинг: тема, мобильное меню, состояние шапки, просмотр скриншотов, год в подвале */
 (function () {
   'use strict';
 
@@ -116,4 +116,92 @@
 
   var yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+  /* ---------- Просмотр скриншотов ----------
+     Ссылки a[data-zoom] ведут на сам файл: без JS картинка просто откроется
+     отдельной вкладкой, с JS — поверх страницы, без ухода со сайта. */
+
+  var zoomLinks = document.querySelectorAll('a[data-zoom]');
+
+  if (zoomLinks.length) {
+    var box = document.createElement('div');
+    var boxImg = document.createElement('img');
+    var boxClose = document.createElement('button');
+    var trigger = null;
+
+    box.className = 'lightbox';
+    box.hidden = true;
+    box.setAttribute('role', 'dialog');
+    box.setAttribute('aria-modal', 'true');
+    box.setAttribute('aria-label', 'Просмотр скриншота');
+
+    boxImg.className = 'lightbox-img';
+    boxImg.alt = '';
+
+    boxClose.type = 'button';
+    boxClose.className = 'icon-btn lightbox-close';
+    boxClose.setAttribute('aria-label', 'Закрыть');
+    boxClose.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+
+    box.appendChild(boxImg);
+    box.appendChild(boxClose);
+    document.body.appendChild(box);
+
+    /* Пока открыт просмотр, остальная страница недоступна ни фокусу, ни скроллу */
+    var setBackgroundInert = function (on) {
+      var nodes = document.body.children;
+      for (var i = 0; i < nodes.length; i++) {
+        if (nodes[i] !== box) nodes[i].inert = on;
+      }
+    };
+
+    var openBox = function (link) {
+      var thumb = link.querySelector('img');
+
+      boxImg.src = link.getAttribute('href');
+      boxImg.alt = thumb ? thumb.alt : '';
+      trigger = link;
+      box.hidden = false;
+
+      /* Прячем вместе со скроллом и полосу прокрутки — компенсируем её ширину, чтобы страница не дёрнулась */
+      var gap = window.innerWidth - root.clientWidth;
+      root.style.paddingRight = gap > 0 ? gap + 'px' : '';
+      root.classList.add('is-lightbox-open');
+
+      setBackgroundInert(true);
+      boxClose.focus();
+    };
+
+    var closeBox = function () {
+      if (box.hidden) return;
+
+      box.hidden = true;
+      setBackgroundInert(false);
+      root.classList.remove('is-lightbox-open');
+      root.style.paddingRight = '';
+
+      if (trigger) trigger.focus();
+      trigger = null;
+    };
+
+    for (var i = 0; i < zoomLinks.length; i++) {
+      zoomLinks[i].addEventListener('click', function (event) {
+        /* Клик с модификатором оставляем браузеру: ссылка ведёт на сам файл */
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        openBox(this);
+      });
+    }
+
+    /* Клик мимо картинки закрывает */
+    box.addEventListener('click', function (event) {
+      if (event.target === box) closeBox();
+    });
+
+    boxClose.addEventListener('click', closeBox);
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') closeBox();
+    });
+  }
 })();
