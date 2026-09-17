@@ -1,4 +1,4 @@
-/* OSE — лендинг: тема, мобильное меню, состояние шапки, просмотр скриншотов, год в подвале */
+/* OSE — лендинг: тема, мобильное меню, состояние шапки, версия из релизов, просмотр скриншотов, год в подвале */
 (function () {
   'use strict';
 
@@ -116,6 +116,55 @@
 
   var yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+  /* ---------- Версия из последнего релиза приложения ----------
+     В разметке стоит версия на момент вёрстки: если запрос не пройдёт (нет сети,
+     исчерпан лимит неавторизованных запросов к API), страница останется с ней. */
+
+  var RELEASES_LATEST = 'https://api.github.com/repos/Halantar-git/open-stream-environment/releases/latest';
+  var MONTHS = [
+    'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+    'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+  ];
+
+  var versionSlots = document.querySelectorAll('[data-release-version]');
+  var dateSlots = document.querySelectorAll('[data-release-date]');
+
+  if ((versionSlots.length || dateSlots.length) && window.fetch) {
+    var fill = function (nodes, text) {
+      for (var i = 0; i < nodes.length; i++) nodes[i].textContent = text;
+    };
+
+    window.fetch(RELEASES_LATEST, { headers: { accept: 'application/vnd.github+json' } })
+      .then(function (response) {
+        return response.ok ? response.json() : null;
+      })
+      .then(function (release) {
+        if (!release) return;
+
+        var version = String(release.tag_name || '').replace(/^v/, '');
+        var parts = String(release.published_at || '').slice(0, 10).split('-');
+        var month = MONTHS[Number(parts[1]) - 1];
+
+        if (version) fill(versionSlots, version);
+
+        /* published_at — UTC; берём дату как есть, без сдвига на часовой пояс */
+        if (parts.length === 3 && month) {
+          fill(dateSlots, Number(parts[2]) + ' ' + month + ' ' + parts[0]);
+        }
+
+        /* Тот же номер — в разметке для поисковиков */
+        var ld = document.querySelector('script[type="application/ld+json"]');
+        if (ld && version) {
+          try {
+            var data = JSON.parse(ld.textContent);
+            data.softwareVersion = version;
+            ld.textContent = JSON.stringify(data, null, 2);
+          } catch (e) {}
+        }
+      })
+      .catch(function () {});
+  }
 
   /* ---------- Просмотр скриншотов ----------
      Ссылки a[data-zoom] ведут на сам файл: без JS картинка просто откроется
