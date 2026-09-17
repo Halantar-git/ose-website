@@ -18,7 +18,7 @@ import sys
 import urllib.request
 
 REPO = 'Halantar-git/open-stream-environment'
-API = 'https://api.github.com/repos/%s/releases/latest' % REPO
+API = f'https://api.github.com/repos/{REPO}/releases/latest'
 PAGE = 'index.html'
 TIMEOUT = 20
 
@@ -36,7 +36,7 @@ ASSETS = {
 
 # Кнопки систем: href стоит до data-атрибута, а список классов может меняться
 # (btn-lg и т.п.), поэтому ловим по btn-os, а не по полному class.
-SYSTEM = r'(<a class="[^"]*btn-os[^"]*" href=")[^"]*("[^>]*data-download-os="%s")'
+SYSTEM = r'(<a class="[^"]*btn-os[^"]*" href=")[^"]*("[^>]*data-download-os="{key}")'
 
 
 def load_release(path=None):
@@ -48,7 +48,7 @@ def load_release(path=None):
     request.add_header('accept', 'application/vnd.github+json')
     token = os.environ.get('GITHUB_TOKEN')
     if token:
-        request.add_header('authorization', 'Bearer %s' % token)
+        request.add_header('authorization', f'Bearer {token}')
 
     with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
         return json.load(response)
@@ -66,13 +66,12 @@ def stamp(html, release):
     """Возвращает (html, список правок) — только по тем местам, что нашлись в разметке."""
     changes = []
 
-    tag = str(release.get('tag_name') or '')
-    version = tag[1:] if tag.startswith('v') else tag
+    version = str(release.get('tag_name') or '').removeprefix('v')
 
     if version:
-        html, count = re.subn(r'(<span data-release-version>)[^<]*', r'\g<1>' + version, html)
+        html, count = re.subn(r'(<span data-release-version>)[^<]*', rf'\g<1>{version}', html)
         if count:
-            changes.append('версия %s (в %d местах)' % (version, count))
+            changes.append(f'версия {version} (в {count} местах)')
         else:
             changes.append('версия — места в разметке не нашлось')
 
@@ -80,27 +79,32 @@ def stamp(html, release):
     month = MONTHS[int(parts[1]) - 1] if len(parts) == 3 and parts[1].isdigit() and 1 <= int(parts[1]) <= 12 else ''
 
     if month:
-        date = '%d %s %s' % (int(parts[2]), month, parts[0])
-        html, count = re.subn(r'(<span data-release-date>)[^<]*', r'\g<1>' + date, html)
+        date = f'{int(parts[2])} {month} {parts[0]}'
+        html, count = re.subn(r'(<span data-release-date>)[^<]*', rf'\g<1>{date}', html)
         if count:
-            changes.append('дата %s (в %d местах)' % (date, count))
+            changes.append(f'дата {date} (в {count} местах)')
         else:
             changes.append('дата — места в разметке не нашлось')
 
     assets = release.get('assets') or []
     for key, patterns in ASSETS.items():
         asset = pick_asset(assets, patterns)
-        url = asset.get('browser_download_url') if asset else ''
 
-        if not url:
-            changes.append('%s — файл не найден в релизе' % key)
+        if not asset:
+            changes.append(f'{key} — файл не найден в релизе')
             continue
 
-        html, count = re.subn(SYSTEM % key, r'\g<1>' + url + r'\g<2>', html)
+        url = asset.get('browser_download_url') or ''
+
+        if not url:
+            changes.append(f'{key} — у файла нет адреса для скачивания')
+            continue
+
+        html, count = re.subn(SYSTEM.format(key=key), rf'\g<1>{url}\g<2>', html)
         if count:
-            changes.append('%s → %s' % (key, asset['name']))
+            changes.append(f'{key} → {asset["name"]}')
         else:
-            changes.append('%s — кнопки в разметке не нашлось' % key)
+            changes.append(f'{key} — кнопки в разметке не нашлось')
 
     return html, changes
 
@@ -111,8 +115,9 @@ def main():
 
     try:
         release = load_release(release_path)
-    except Exception as error:  # noqa: BLE001 — любая беда с сетью или файлом: просто не трогаем страницу
-        print('релиз не получен: %s' % error)
+    # нет файла, нет сети, битый JSON — в любом из этих случаев просто не трогаем страницу
+    except (OSError, ValueError) as error:
+        print(f'релиз не получен: {error}')
         return 0
 
     with open(page_path, encoding='utf-8') as handle:
@@ -129,7 +134,7 @@ def main():
             handle.write(stamped)
 
     for change in changes:
-        print('· %s' % change)
+        print(f'· {change}')
 
     return 0
 
