@@ -11,6 +11,8 @@ index.html                     лендинг
 assets/css/style.css           все стили: M3-токены + компоненты
 assets/js/main.js              тема, мобильное меню, ripple, мелочи
 assets/img/app.svg             иконка приложения (шапка, подвал, favicon)
+assets/img/main.png            скриншот в hero
+assets/img/*.png               галерея в секции «Скриншоты»
 ```
 
 ## Откуда взялся контент
@@ -31,23 +33,8 @@ assets/img/app.svg             иконка приложения (шапка, п
 1. **Лицензия.** Везде указана GPL со ссылкой на файл `LICENSE` в репозитории приложения — в FAQ, блоке «Скачать», подвале и JSON-LD. Если файл называется иначе (`LICENSE.md`, `COPYING`) или у вас GPL-2.0 — поправьте ссылку и текст.
 2. **Ссылки уже проставлены** на `github.com/Halantar-git/open-stream-environment`: репозиторий, CHANGELOG, issues, `releases/latest` и README («Как установить»).
 3. **Адрес сайта.** В `canonical`, `og:url` и JSON-LD стоит `https://halantar-git.github.io/open-stream-environment/`, в `404.html` — `SITE_ROOT = '/open-stream-environment/'`. Если сайт будет в другом репозитории или на своём домене, поправьте эти четыре места; при своём домене `SITE_ROOT` должен стать `'/'` — сайт ляжет в корень.
-4. **Скриншоты.** В hero и в секции `#screens` стоят заглушки-рамки. Положите файлы в `assets/img/` и замените разметку:
-
-   ```html
-   <!-- было -->
-   <div class="shot"><span>[Экран 1]</span></div>
-
-   <!-- стало -->
-   <img class="shot" src="assets/img/screen-1.png" alt="Что видно на экране" loading="lazy" width="1280" height="800">
-   ```
-
-   Для hero — вместо блока `<div class="mock">…</div>`:
-
-   ```html
-   <img src="assets/img/hero.png" alt="Главный экран приложения" width="1200" height="900">
-   ```
-
-   Классы `.mock` и `.shot` уже дают скругления и тональный фон; у `.mock` — ещé и elevation.
+4. **Скриншоты.** Вставлены из приложения: в hero — `assets/img/main.png`, в галерее `#screens` — остальные 11. Вертикальные скриншоты пульта помечены `shot--tall`, чтобы не растягиваться на всю колонку.
+   Alt-тексты написаны по именам файлов — вычитайте их в `index.html` и поправьте под фактические экраны.
 5. **Превью для соцсетей.** Положите `assets/img/og.png` (1200×630) и раскомментируйте `og:image` в `<head>`.
 6. **Политика конфиденциальности.** Единственная оставшаяся заглушка в подвале. Для сторов такая страница обычно обязательна — можно сделать `privacy.html` по образцу `404.html`.
 7. **Иконка.** В шапке, подвале и favicon используется `assets/img/app.svg`. Скругление углов задаётся в CSS (`.brand-mark { border-radius: … }`) — уберите, если хотите показывать её квадратом. Для `apple-touch-icon` iOS нужен PNG 180×180: SVG там не читается, сейчас стоит ссылка на `app.svg`.
