@@ -92,6 +92,9 @@
 
   --page-max-width: 1200px;
   --top-bar-height: 64px;
+  /* Клинья на фоне страницы — те же две роли, что и в баннере приложения */
+  --page-wedge-left: var(--md-sys-color-primary);
+  --page-wedge-right: var(--md-sys-color-secondary);
   color-scheme: light;
 }
 
@@ -130,6 +133,8 @@
     --md-sys-color-inverse-surface: #E1E2E9;
     --md-sys-color-inverse-on-surface: #2E3135;
     --md-sys-color-inverse-primary: #005FAF;
+    --page-wedge-left: var(--md-sys-color-primary-container);
+    --page-wedge-right: var(--md-sys-color-secondary-container);
     color-scheme: dark;
   }
 }
@@ -167,6 +172,8 @@
   --md-sys-color-inverse-surface: #E1E2E9;
   --md-sys-color-inverse-on-surface: #2E3135;
   --md-sys-color-inverse-primary: #005FAF;
+  --page-wedge-left: var(--md-sys-color-primary-container);
+  --page-wedge-right: var(--md-sys-color-secondary-container);
   color-scheme: dark;
 }
 
@@ -186,6 +193,36 @@ body {
   font: var(--md-sys-typescale-body-large-font);
   letter-spacing: var(--md-sys-typescale-body-large-tracking);
   -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Фон страницы ----------
+   Два клина по краям окна — та же композиция, что в баннере приложения.
+   Ширина — ровно поля страницы, то есть место за пределами 1200px контента,
+   так что под текстом клинья не оказываются; на узких окнах полей нет — нет и клиньев. */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
+  width: min(360px, max(0px, calc((100% - var(--page-max-width)) / 2)));
+  pointer-events: none;
+}
+body::before {
+  left: 0;
+  background: var(--page-wedge-left);
+  clip-path: polygon(0 0, 100% 0, 60% 100%, 0 100%);
+}
+body::after {
+  right: 0;
+  background: var(--page-wedge-right);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 40% 100%);
+}
+
+/* Ниже 1300px в полях остаётся меньше 50px — клиньям там нечего делать */
+@media (max-width: 1300px) {
+  body::before, body::after { display: none; }
 }
 
 img, svg { max-width: 100%; }
