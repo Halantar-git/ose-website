@@ -24,6 +24,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
+      # То же, что в checks.yml, но здесь проверка ещё и не пускает битую
+      # разметку на сайт: выкладка прерывается до публикации
+      - name: Check site
+        run: python3 .github/check-site.py
+
       # Подставляет в index.html версию, дату и адреса файлов последнего релиза:
       # тогда кнопки скачивания у посетителя не зависят от лимитов API
       - name: Stamp release version and links

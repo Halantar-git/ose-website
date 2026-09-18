@@ -1,0 +1,21 @@
+name: Checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  site:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      # Ссылки, размеры картинок, места подстановки релиза и сам подстановщик
+      - name: Check site
+        run: python3 .github/check-site.py

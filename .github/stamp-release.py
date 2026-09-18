@@ -17,6 +17,12 @@ import re
 import sys
 import urllib.request
 
+# В консоли Windows кодировка по умолчанию не UTF-8, и печать падает на «→»
+try:
+    sys.stdout.reconfigure(encoding='utf-8')
+except (AttributeError, OSError):
+    pass
+
 REPO = 'Halantar-git/open-stream-environment'
 API = f'https://api.github.com/repos/{REPO}/releases/latest'
 PAGE = 'index.html'
@@ -74,6 +80,10 @@ def stamp(html, release):
             changes.append(f'версия {version} (в {count} местах)')
         else:
             changes.append('версия — места в разметке не нашлось')
+
+        # Та же версия в разметке для поисковиков, у неё нет видимого места
+        html, count = re.subn(r'("softwareVersion": ")[^"]*', rf'\g<1>{version}', html)
+        changes.append(f'версия {version} в softwareVersion' if count else 'softwareVersion — не нашлось')
 
     parts = str(release.get('published_at') or '')[:10].split('-')
     month = MONTHS[int(parts[1]) - 1] if len(parts) == 3 and parts[1].isdigit() and 1 <= int(parts[1]) <= 12 else ''
