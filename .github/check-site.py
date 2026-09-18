@@ -9,7 +9,7 @@
   * все локальные ссылки и картинки из HTML существуют на диске;
   * размеры <img> в разметке совпадают с размерами файлов (иначе вёрстка
     прыгает при загрузке, а картинка растягивается);
-  * <img> картинок-скриншотов совпадают по размеру с og:image;
+  * og:image совпадает по размеру со своим файлом;
   * места для подстановки релиза (версия, дата, кнопки) на месте;
   * stamp-release.py действительно подставляет данные тестового релиза.
 
@@ -38,8 +38,8 @@ SKIP_SCHEMES = ('http://', 'https://', '//', 'mailto:', 'tel:', 'data:', 'javasc
 # Кнопок скачивания и мест под версию с датой — по три (по одной на систему)
 PLACEHOLDERS = {'data-release-version': 3, 'data-release-date': 3, 'data-download-os': 3}
 
-errors = []
-notes = []
+errors: list[str] = []
+notes: list[str] = []
 
 
 def fail(message):
@@ -96,14 +96,16 @@ def svg_size(text):
     tag = re.search(r'<svg\b[^>]*>', text, re.IGNORECASE)
     if not tag:
         return None
+
     attributes = dict(ATTR.findall(tag.group(0)))
     try:
-        return int(round(float(attributes['width']))), int(round(float(attributes['height'])))
+        return round(float(attributes['width'])), round(float(attributes['height']))
     except (KeyError, ValueError):
         pass
+
     try:
-        x, y, width, height = attributes['viewBox'].replace(',', ' ').split()
-        return int(round(float(width))), int(round(float(height)))
+        _, _, width, height = attributes['viewBox'].replace(',', ' ').split()
+        return round(float(width)), round(float(height))
     except (KeyError, ValueError):
         return None
 
@@ -124,9 +126,8 @@ def image_size(path):
 def check_links(page):
     html = read(os.path.join(ROOT, page))
     for target in set(LINK.findall(html)):
-        exists = resolves_to(page, target)
-        if exists is False:
-            fail('%s: ссылка «%s» никуда не ведёт' % (page, target))
+        if resolves_to(page, target) is False:
+            fail(f'{page}: ссылка «{target}» никуда не ведёт')
 
 
 def check_image_sizes(page):
@@ -144,13 +145,13 @@ def check_image_sizes(page):
         if not os.path.isfile(path):
             continue
 
+        declared = int(attributes['width']), int(attributes['height'])
         real = image_size(path)
-        declared = (int(attributes['width']), int(attributes['height']))
         if real is None:
-            notes.append('%s: не разобрал размеры %s' % (page, src))
+            notes.append(f'{page}: не разобрал размеры {src}')
         elif real != declared:
-            fail('%s: у %s в разметке %dx%d, а в файле %dx%d'
-                 % (page, src, declared[0], declared[1], real[0], real[1]))
+            fail(f'{page}: у {src} в разметке {declared[0]}x{declared[1]}, '
+                 f'а в файле {real[0]}x{real[1]}')
 
 
 def check_og_image(html):
@@ -161,22 +162,23 @@ def check_og_image(html):
         fail('index.html: нет og:image или его размеров')
         return
 
-    path = os.path.join(ROOT, 'assets', 'img', url.group(1))
+    name = url.group(1)
+    path = os.path.join(ROOT, 'assets', 'img', name)
     if not os.path.isfile(path):
-        fail('index.html: og:image ссылается на несуществующий %s' % url.group(1))
+        fail(f'index.html: og:image ссылается на несуществующий {name}')
         return
 
     real = image_size(path)
     if real and real != (int(width.group(1)), int(height.group(1))):
-        fail('index.html: og:image заявлено %sx%s, а в файле %dx%d'
-             % (width.group(1), height.group(1), real[0], real[1]))
+        fail(f'index.html: og:image заявлено {width.group(1)}x{height.group(1)}, '
+             f'а в файле {real[0]}x{real[1]}')
 
 
 def check_placeholders(html):
     for name, expected in PLACEHOLDERS.items():
         found = len(re.findall(name, html))
         if found != expected:
-            fail('index.html: мест с %s — %d, ожидалось %d' % (name, found, expected))
+            fail(f'index.html: мест с {name} — {found}, ожидалось {expected}')
 
 
 def check_stamp(index_html):
@@ -202,10 +204,11 @@ def check_stamp(index_html):
 
         done = subprocess.run(
             [sys.executable, os.path.join('.github', 'stamp-release.py'), json_path, page_path],
-            cwd=ROOT, capture_output=True, encoding='utf-8', errors='replace', timeout=60,
+            cwd=ROOT, capture_output=True, encoding='utf-8', errors='replace',
+            timeout=60, check=False,
         )
         if done.returncode != 0:
-            fail('stamp-release.py упал: %s' % (done.stderr.strip() or done.stdout.strip()))
+            fail(f'stamp-release.py упал: {done.stderr.strip() or done.stdout.strip()}')
             return
 
         stamped = read(page_path)
@@ -213,22 +216,26 @@ def check_stamp(index_html):
                       'https://example.invalid/w.exe',
                       'https://example.invalid/l.AppImage', 'https://example.invalid/m.dmg'):
             if probe not in stamped:
-                fail('stamp-release.py не подставил «%s»' % probe)
+                fail(f'stamp-release.py не подставил «{probe}»')
     except subprocess.TimeoutExpired:
         fail('stamp-release.py не ответил за минуту')
     finally:
         shutil.rmtree(room, ignore_errors=True)
 
 
+def force_utf8_output():
+    """В консоли Windows кодировка вывода не UTF-8, и печать падает на «→»."""
+    reconfigure = getattr(sys.stdout, 'reconfigure', None)
+    if reconfigure is not None:
+        reconfigure(encoding='utf-8', errors='replace')
+
+
 def main():
-    try:
-        sys.stdout.reconfigure(encoding='utf-8')
-    except Exception:  # noqa: BLE001 — консоль без UTF-8: просто пишем как получится
-        pass
+    force_utf8_output()
 
     for page in PAGES:
         if not os.path.isfile(os.path.join(ROOT, page)):
-            fail('нет страницы %s' % page)
+            fail(f'нет страницы {page}')
             continue
         check_links(page)
         check_image_sizes(page)
@@ -239,12 +246,12 @@ def main():
     check_stamp(index_html)
 
     for note in notes:
-        print('? %s' % note)
+        print(f'? {note}')
     for message in errors:
-        print('! %s' % message)
+        print(f'! {message}')
 
     if errors:
-        print('\nне прошло проверок: %d' % len(errors))
+        print(f'\nне прошло проверок: {len(errors)}')
         return 1
 
     print('всё сошлось: ссылки, размеры картинок, места подстановки и сам подстановщик')

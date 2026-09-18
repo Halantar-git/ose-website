@@ -17,12 +17,6 @@ import re
 import sys
 import urllib.request
 
-# В консоли Windows кодировка по умолчанию не UTF-8, и печать падает на «→»
-try:
-    sys.stdout.reconfigure(encoding='utf-8')
-except (AttributeError, OSError):
-    pass
-
 REPO = 'Halantar-git/open-stream-environment'
 API = f'https://api.github.com/repos/{REPO}/releases/latest'
 PAGE = 'index.html'
@@ -119,7 +113,16 @@ def stamp(html, release):
     return html, changes
 
 
+def force_utf8_output():
+    """В консоли Windows кодировка вывода не UTF-8, и печать падает на «→»."""
+    reconfigure = getattr(sys.stdout, 'reconfigure', None)
+    if reconfigure is not None:
+        reconfigure(encoding='utf-8', errors='replace')
+
+
 def main():
+    force_utf8_output()
+
     release_path = sys.argv[1] if len(sys.argv) > 1 else None
     page_path = sys.argv[2] if len(sys.argv) > 2 else PAGE
 
