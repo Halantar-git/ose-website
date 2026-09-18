@@ -462,18 +462,7 @@ a:hover { text-decoration: underline; }
   box-shadow: var(--md-sys-elevation-level1);
   overflow: hidden;
 }
-.mock img { width: 100%; }
-.mock-bar { display: flex; gap: 8px; padding: 14px 16px; background: var(--md-sys-color-surface-container-high); }
-.mock-bar span { width: 10px; height: 10px; border-radius: var(--md-sys-shape-corner-full); background: var(--md-sys-color-outline-variant); }
-.mock-body { display: grid; place-items: center; aspect-ratio: 4 / 3; }
-.mock-label {
-  margin: 0;
-  padding: 0 24px;
-  color: var(--md-sys-color-on-surface-variant);
-  font: var(--md-sys-typescale-body-medium-font);
-  letter-spacing: var(--md-sys-typescale-body-medium-tracking);
-  text-align: center;
-}
+.mock img { display: block; width: 100%; height: auto; }
 
 /* ---------- Секции ---------- */
 .section { padding: clamp(48px, 7vw, 88px) 0; }
@@ -705,6 +694,12 @@ html.is-lightbox-open { overflow: hidden; }
 /* Кнопки систем в блоке «Скачать»; глифы брендов залиты currentColor (Simple Icons, CC0) */
 .os-row { margin-top: 28px; }
 .btn-os svg { flex: 0 0 auto; width: 20px; height: 20px; }
+
+/* ---------- Текстовые страницы (политика конфиденциальности) ---------- */
+.doc h2 { margin-top: 40px; }
+.doc ul { margin: 0 0 16px; padding-left: 22px; }
+.doc li { margin-bottom: 8px; }
+.doc > p > a, .doc li a { text-decoration: underline; }
 
 /* ---------- Подвал ---------- */
 .site-footer {

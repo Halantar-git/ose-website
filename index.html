@@ -4,12 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!--
-  ЧТО ОСТАЛОСЬ СДЕЛАТЬ:
-  1. Ссылка на политику конфиденциальности в подвале — пока заглушка в квадратных скобках.
-  2. Превью для соцсетей: положить assets/img/og.png (1200x630) и раскомментировать og:image ниже.
--->
-
 <title>Open Stream Environment — визуальный редактор стрим-оверлея для OBS</title>
 <meta name="description" content="Стрим-оверлей и визуальный редактор раскладки на Electron: алерты, чат, цель доната, сцены и 3D-виджеты. Отдаётся в OBS как Browser Source.">
 <link rel="canonical" href="https://ose-overlay.ru/">
@@ -17,16 +11,18 @@
 <meta name="theme-color" content="#F9F9FF" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="assets/img/app.svg" type="image/svg+xml">
-<!-- iOS не читает SVG в apple-touch-icon: при желании добавьте PNG 180x180 -->
-<link rel="apple-touch-icon" href="assets/img/app.svg">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Open Stream Environment">
 <meta property="og:title" content="Open Stream Environment — визуальный редактор стрим-оверлея для OBS">
 <meta property="og:description" content="Стрим-оверлей в стиле Material Design 3 и редактор раскладки в стиле drag-and-drop. Отдаётся в OBS как Browser Source.">
 <meta property="og:url" content="https://ose-overlay.ru/">
-<!-- TODO: положить файл assets/img/og.png (1200x630) и раскомментировать -->
-<!-- <meta property="og:image" content="https://ose-overlay.ru/assets/img/og.png"> -->
+<meta property="og:image" content="https://ose-overlay.ru/assets/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Open Stream Environment — визуальный редактор стрим-оверлея для OBS">
+<meta property="og:locale" content="ru_RU">
 <meta name="twitter:card" content="summary_large_image">
 
 <link rel="stylesheet" href="assets/css/style.css">
@@ -50,7 +46,7 @@
   "author": { "@type": "Person", "name": "Halantar" },
   "description": "Стрим-оверлей в стиле Material Design 3 и визуальный редактор раскладки на Electron: алерты, чат, цель доната, сцены, темы и 3D-виджеты.",
   "license": "https://github.com/Halantar-git/open-stream-environment/blob/HEAD/LICENSE",
-  "softwareRequirements": "Node.js 22.12+ и Electron 43",
+  "softwareRequirements": "Windows 10+, Linux, macOS (Apple Silicon)",
   "downloadUrl": "https://github.com/Halantar-git/open-stream-environment/releases/latest",
   "url": "https://ose-overlay.ru/",
   "sameAs": "https://github.com/Halantar-git/open-stream-environment"
@@ -113,8 +109,8 @@
       <!-- Визуал в hero: главный экран редактора -->
       <div class="hero-visual">
         <div class="mock">
-          <a class="shot-link" href="assets/img/main.png" data-zoom>
-            <img src="assets/img/main.png" alt="Редактор раскладки: канвас 16:9 с превью оверлея, библиотека виджетов слева, слои и свойства справа" width="1920" height="1032">
+          <a class="shot-link" href="assets/img/main.webp" data-zoom>
+            <img src="assets/img/main.webp" alt="Редактор раскладки: канвас 16:9 с превью оверлея, библиотека виджетов слева, слои и свойства справа" width="1920" height="1032" fetchpriority="high">
           </a>
         </div>
       </div>
@@ -197,32 +193,32 @@
 
       <!-- alt-тексты написаны по именам файлов — поправьте под то, что на экранах -->
       <div class="shots">
-        <a class="shot" href="assets/img/ed-3.png" data-zoom>
-          <img src="assets/img/ed-3.png" alt="Экран редактора раскладки" loading="lazy" width="1919" height="1079">
+        <a class="shot" href="assets/img/ed-3.webp" data-zoom>
+          <img src="assets/img/ed-3.webp" alt="Экран редактора раскладки" loading="lazy" width="1919" height="1079">
         </a>
-        <a class="shot" href="assets/img/wheel-new.png" data-zoom>
-          <img src="assets/img/wheel-new.png" alt="Колесо Фортуны: псевдо-3D барабан" loading="lazy" width="1920" height="1031">
+        <a class="shot" href="assets/img/wheel-new.webp" data-zoom>
+          <img src="assets/img/wheel-new.webp" alt="Колесо Фортуны: псевдо-3D барабан" loading="lazy" width="1920" height="1031">
         </a>
-        <a class="shot" href="assets/img/poll.png" data-zoom>
-          <img src="assets/img/poll.png" alt="Сцена голосования: живая диаграмма" loading="lazy" width="1920" height="1080">
+        <a class="shot" href="assets/img/poll.webp" data-zoom>
+          <img src="assets/img/poll.webp" alt="Сцена голосования: живая диаграмма" loading="lazy" width="1920" height="1080">
         </a>
-        <a class="shot" href="assets/img/poll2.png" data-zoom>
-          <img src="assets/img/poll2.png" alt="Сцена голосования: другой тип диаграммы" loading="lazy" width="1920" height="1080">
+        <a class="shot" href="assets/img/poll2.webp" data-zoom>
+          <img src="assets/img/poll2.webp" alt="Сцена голосования: другой тип диаграммы" loading="lazy" width="1920" height="1080">
         </a>
-        <a class="shot" href="assets/img/scene.png" data-zoom>
-          <img src="assets/img/scene.png" alt="Полноэкранная сцена для OBS" loading="lazy" width="1920" height="1032">
+        <a class="shot" href="assets/img/scene.webp" data-zoom>
+          <img src="assets/img/scene.webp" alt="Полноэкранная сцена для OBS" loading="lazy" width="1920" height="1032">
         </a>
-        <a class="shot" href="assets/img/term.png" data-zoom>
-          <img src="assets/img/term.png" alt="Терминал логов в панели управления" loading="lazy" width="1920" height="1032">
+        <a class="shot" href="assets/img/term.webp" data-zoom>
+          <img src="assets/img/term.webp" alt="Терминал логов в панели управления" loading="lazy" width="1920" height="1032">
         </a>
-        <a class="shot" href="assets/img/hud-mode.png" data-zoom>
-          <img src="assets/img/hud-mode.png" alt="Режим редактирования HUD поверх игры" loading="lazy" width="1919" height="1079">
+        <a class="shot" href="assets/img/hud-mode.webp" data-zoom>
+          <img src="assets/img/hud-mode.webp" alt="Режим редактирования HUD поверх игры" loading="lazy" width="1919" height="1079">
         </a>
-        <a class="shot shot--tall" href="assets/img/remote1.png" data-zoom>
-          <img src="assets/img/remote1.png" alt="Web Remote на телефоне: управление" loading="lazy" width="502" height="841">
+        <a class="shot shot--tall" href="assets/img/remote1.webp" data-zoom>
+          <img src="assets/img/remote1.webp" alt="Web Remote на телефоне: управление" loading="lazy" width="502" height="841">
         </a>
-        <a class="shot shot--tall" href="assets/img/remote2.png" data-zoom>
-          <img src="assets/img/remote2.png" alt="Web Remote на телефоне: вкладка чата" loading="lazy" width="502" height="841">
+        <a class="shot shot--tall" href="assets/img/remote2.webp" data-zoom>
+          <img src="assets/img/remote2.webp" alt="Web Remote на телефоне: вкладка чата" loading="lazy" width="502" height="841">
         </a>
       </div>
     </div>
@@ -345,7 +341,7 @@
       <a href="https://github.com/Halantar-git/open-stream-environment">GitHub</a>
       <a href="https://github.com/Halantar-git/open-stream-environment/blob/HEAD/CHANGELOG.md">История версий</a>
       <a href="https://github.com/Halantar-git/open-stream-environment/issues">Сообщить об ошибке</a>
-      <a href="#">[Политика конфиденциальности]</a>
+      <a href="privacy.html">Политика конфиденциальности</a>
     </nav>
 
     <p class="footer-legal">© <span id="year">2026</span> Halantar · Open Stream Environment · <a href="https://github.com/Halantar-git/open-stream-environment/blob/HEAD/LICENSE">лицензия GPL</a></p>

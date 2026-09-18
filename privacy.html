@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Политика конфиденциальности — Open Stream Environment</title>
+<meta name="description" content="Что делает сайт ose-overlay.ru и приложение Open Stream Environment с вашими данными: сайт ничего не собирает, приложение хранит всё локально и не отправляет данные разработчику.">
+<link rel="canonical" href="https://ose-overlay.ru/privacy.html">
+<meta name="theme-color" content="#F9F9FF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="assets/img/app.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/style.css">
+<script>
+  try {
+    var t = localStorage.getItem('ose-theme');
+    if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+  } catch (e) {}
+</script>
+</head>
+<body>
+
+<main class="section">
+  <div class="wrap wrap-narrow doc">
+    <p class="badge">Политика конфиденциальности</p>
+    <h1>Что происходит с вашими данными</h1>
+    <p class="lead">Коротко: этот сайт не собирает ничего, а приложение хранит все данные только на
+      вашем компьютере и никуда их не отправляет — кроме сервисов, которые вы подключите сами.</p>
+
+    <h2>Этот сайт</h2>
+    <p>Страница статическая: ни аналитики, ни счётчиков, ни рекламы, ни cookie. Единственное, что
+      сохраняется в браузере, — выбранная тема (светлая или тёмная), и только в его локальном
+      хранилище; на сервер это не уходит и удаляется вместе с данными сайта в настройках браузера.</p>
+    <p>Внешний запрос со страницы один: к <code>api.github.com</code> за номером последней версии и
+      ссылками на файлы сборки. Через него уходит только сам запрос — как при переходе по любой
+      ссылке на <code>github.com</code>, который видит IP-адрес обратившегося. Если запрос не прошёл,
+      страница показывает значения, записанные при публикации. Остальные внешние ссылки — на GitHub,
+      и на них действует политика GitHub.</p>
+    <p>Сайт отдаётся хостингом GitHub Pages, поэтому IP-адреса посетителей видит GitHub — как и при
+      любом хостинге. Своей серверной части у сайта нет.</p>
+
+    <h2>Приложение</h2>
+    <p>Open Stream Environment — обычная программа для вашего компьютера. У неё нет ни аккаунта, ни
+      сервера разработчика: регистрироваться негде и не нужно.</p>
+    <ul>
+      <li>Настройки, раскладка оверлея и история событий лежат в файлах рядом с приложением — в
+        каталоге данных (в Windows это <code>%APPDATA%\Open Stream Environment</code>, папку можно
+        открыть из настроек).</li>
+      <li>Токены Twitch, DonationAlerts и YouTube, а также пароль OBS WebSocket шифруются системным
+        хранилищем вашей учётной записи (DPAPI в Windows, Keychain в macOS, libsecret в Linux) и
+        никогда не хранятся и не передаются в открытом виде.</li>
+      <li>Телеметрии, аналитики и «звонков домой» нет: приложение не отправляет данные разработчику
+        ни при запуске, ни во время работы. Проверить, что уходит наружу, можно в журнале приложения
+        и в отчёте для поддержки.</li>
+      <li>Наружу уходят только запросы к сервисам, которые вы подключили: Twitch, DonationAlerts,
+        YouTube и OBS WebSocket. Это ваши токены и ваши сервисы — их политики конфиденциальности
+        применяются к этим данным.</li>
+      <li>Локальный сервер приложения слушает порт и доступен в локальной сети, но управлять им
+        можно только с кодом доступа: чужие устройства в той же сети не смогут переключать сцены.
+        Код можно сменить в «Настройки → Доступ из сети», тогда прежний перестаёт работать.</li>
+      <li>Отчёты для поддержки (кнопка «Сохранить отчёт», <code>/support-bundle</code>) собираются
+        без секретов: значения токенов в них не попадают, и отправляете их только вы.</li>
+      <li>Удалить всё: «Сбросить базу данных» в настройках или удаление каталога данных вместе с
+        файлами историй.</li>
+    </ul>
+
+    <h2>Третьи стороны</h2>
+    <p>Приложение соединяется напрямую с сервисами, которые вы настроили: Twitch, DonationAlerts,
+      YouTube и OBS. Никакого посредника между вами и ими нет, поэтому к тому, что туда уходит,
+      применяются их собственные политики. Разработчик приложения к этому доступа не имеет.</p>
+
+    <h2>Вопросы</h2>
+    <p>Если что-то в этой странице расходится с тем, что делает программа, — это ошибка, и её стоит
+      исправить: напишите в <a href="https://github.com/Halantar-git/open-stream-environment/issues">issues
+      репозитория</a>. Приложение распространяется под лицензией GPL, исходный код открыт и доступен
+      для проверки.</p>
+    <p>Обновлено: 18 сентября 2026.</p>
+
+    <div class="cta-row">
+      <a class="btn btn-primary btn-lg" href="./">На главную</a>
+      <a class="btn btn-ghost" href="https://github.com/Halantar-git/open-stream-environment">Репозиторий</a>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <img class="brand-mark" src="assets/img/app.svg" alt="" width="24" height="24">
+      <span>Open Stream Environment</span>
+    </div>
+    <p class="footer-legal">© <span id="year">2026</span> Halantar · Open Stream Environment · <a href="https://github.com/Halantar-git/open-stream-environment/blob/HEAD/LICENSE">лицензия GPL</a></p>
+  </div>
+</footer>
+
+<script>
+  var yearEl = document.getElementById('year');
+  if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+  try {
+    var t = localStorage.getItem('ose-theme');
+    if (t === 'dark') {
+      document.querySelectorAll('meta[name="theme-color"]').forEach(function (m) {
+        m.removeAttribute('media');
+        m.setAttribute('content', '#111318');
+      });
+    }
+  } catch (e) {}
+</script>
+
+</body>
+</html>
