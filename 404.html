@@ -32,10 +32,9 @@
 
 <script>
   /* GitHub Pages отдаёт эту страницу на любой глубине URL, поэтому «./»
-     может указывать не в корень сайта. Здесь — корень сайта:
-     для project pages это «/<имя-репозитория>/», для user pages — «/».
-     TODO: поменяйте, если сайт переедет в другой репозиторий. */
-  var SITE_ROOT = '/open-stream-environment/';
+     может указывать не в корень сайта. Здесь — корень сайта: у сайта свой
+     домен, поэтому «/». Без домена тут было бы «/<имя-репозитория>/». */
+  var SITE_ROOT = '/';
   var link = document.getElementById('home-link');
   if (link && SITE_ROOT !== './') link.setAttribute('href', SITE_ROOT);
 </script>
