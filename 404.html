@@ -27,6 +27,8 @@
     <div class="cta-row cta-row-center">
       <a class="btn btn-primary btn-lg" id="home-link" href="./">На главную</a>
     </div>
+
+    <p class="cta-note">Сайт есть и на английском — <a id="en-link" href="./en/" hreflang="en" lang="en">English version</a>.</p>
   </div>
 </main>
 
@@ -37,6 +39,9 @@
   var SITE_ROOT = '/';
   var link = document.getElementById('home-link');
   if (link && SITE_ROOT !== './') link.setAttribute('href', SITE_ROOT);
+
+  var enLink = document.getElementById('en-link');
+  if (enLink) enLink.setAttribute('href', SITE_ROOT + 'en/');
 </script>
 
 <script>

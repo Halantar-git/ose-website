@@ -10,8 +10,10 @@
   * размеры <img> в разметке совпадают с размерами файлов (иначе вёрстка
     прыгает при загрузке, а картинка растягивается);
   * og:image совпадает по размеру со своим файлом;
+  * canonical и hreflang ведут туда, куда обещают, у обеих языковых версий;
   * места для подстановки релиза (версия, дата, кнопки) на месте;
-  * stamp-release.py действительно подставляет данные тестового релиза.
+  * stamp-release.py действительно подставляет данные тестового релиза —
+    на русской странице по-русски, на английской по-английски.
 
 Зависимостей нет — только стандартная библиотека. Код возврата 1, если что-то
 не сошлось.
@@ -26,7 +28,9 @@ import sys
 import tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PAGES = ['index.html', 'privacy.html', '404.html']
+# Лендинги обеих языковых версий и страницы политики
+INDEXES = ['index.html', 'en/index.html']
+PAGES = INDEXES + ['privacy.html', 'en/privacy.html']
 
 LINK = re.compile(r'(?:src|href)="([^"]*)"')
 IMG = re.compile(r'<img\b[^>]*>', re.IGNORECASE)
@@ -154,34 +158,57 @@ def check_image_sizes(page):
                  f'а в файле {real[0]}x{real[1]}')
 
 
-def check_og_image(html):
+def check_og_image(page, html):
     width = re.search(r'property="og:image:width" content="(\d+)"', html)
     height = re.search(r'property="og:image:height" content="(\d+)"', html)
     url = re.search(r'property="og:image" content="[^"]*?([^/"]+)"', html)
     if not (width and height and url):
-        fail('index.html: нет og:image или его размеров')
+        fail(f'{page}: нет og:image или его размеров')
         return
 
     name = url.group(1)
     path = os.path.join(ROOT, 'assets', 'img', name)
     if not os.path.isfile(path):
-        fail(f'index.html: og:image ссылается на несуществующий {name}')
+        fail(f'{page}: og:image ссылается на несуществующий {name}')
         return
 
     real = image_size(path)
     if real and real != (int(width.group(1)), int(height.group(1))):
-        fail(f'index.html: og:image заявлено {width.group(1)}x{height.group(1)}, '
+        fail(f'{page}: og:image заявлено {width.group(1)}x{height.group(1)}, '
              f'а в файле {real[0]}x{real[1]}')
 
 
-def check_placeholders(html):
+def check_alternates(page, html):
+    """У каждой страницы должен быть canonical на свой адрес и обе языковые версии."""
+    suffix = '' if page in INDEXES else 'privacy.html'
+    expected = {
+        'ru': f'https://ose-overlay.ru/{suffix}',
+        'en': f'https://ose-overlay.ru/en/{suffix}',
+        'x-default': f'https://ose-overlay.ru/{suffix}',
+    }
+
+    canonical = re.search(r'rel="canonical" href="([^"]*)"', html)
+    if not canonical:
+        fail(f'{page}: нет canonical')
+    elif canonical.group(1) != expected['en' if page.startswith('en/') else 'ru']:
+        fail(f'{page}: canonical «{canonical.group(1)}» указывает не на саму страницу')
+
+    found = dict(re.findall(r'rel="alternate" hreflang="([^"]*)" href="([^"]*)"', html))
+    for code, url in expected.items():
+        if code not in found:
+            fail(f'{page}: нет ссылки hreflang="{code}"')
+        elif found[code] != url:
+            fail(f'{page}: hreflang="{code}" — «{found[code]}», ожидалось «{url}»')
+
+
+def check_placeholders(page, html):
     for name, expected in PLACEHOLDERS.items():
         found = len(re.findall(name, html))
         if found != expected:
-            fail(f'index.html: мест с {name} — {found}, ожидалось {expected}')
+            fail(f'{page}: мест с {name} — {found}, ожидалось {expected}')
 
 
-def check_stamp(index_html):
+def check_stamp(page, index_html):
     """Прогоняет stamp-release.py на поддельном релизе: файл не должен испортиться."""
     fixture = {
         'tag_name': 'v9.9.9',
@@ -208,15 +235,16 @@ def check_stamp(index_html):
             timeout=60, check=False,
         )
         if done.returncode != 0:
-            fail(f'stamp-release.py упал: {done.stderr.strip() or done.stdout.strip()}')
+            fail(f'{page}: stamp-release.py упал: {done.stderr.strip() or done.stdout.strip()}')
             return
 
         stamped = read(page_path)
-        for probe in ('9.9.9', '5 января 2026', '"softwareVersion": "9.9.9"',
+        date = 'January 5, 2026' if page.startswith('en/') else '5 января 2026'
+        for probe in ('9.9.9', date, '"softwareVersion": "9.9.9"',
                       'https://example.invalid/w.exe',
                       'https://example.invalid/l.AppImage', 'https://example.invalid/m.dmg'):
             if probe not in stamped:
-                fail(f'stamp-release.py не подставил «{probe}»')
+                fail(f'{page}: stamp-release.py не подставил «{probe}»')
     except subprocess.TimeoutExpired:
         fail('stamp-release.py не ответил за минуту')
     finally:
@@ -240,10 +268,12 @@ def main():
         check_links(page)
         check_image_sizes(page)
 
-    index_html = read(os.path.join(ROOT, 'index.html'))
-    check_og_image(index_html)
-    check_placeholders(index_html)
-    check_stamp(index_html)
+    index_html = {page: read(os.path.join(ROOT, page)) for page in INDEXES}
+    for page, html in index_html.items():
+        check_og_image(page, html)
+        check_alternates(page, html)
+        check_placeholders(page, html)
+        check_stamp(page, html)
 
     for note in notes:
         print(f'? {note}')

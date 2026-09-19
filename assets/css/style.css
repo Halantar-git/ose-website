@@ -310,6 +310,27 @@ html.at-top .site-header { background: transparent; }
 
 .header-actions { display: flex; align-items: center; gap: 4px; }
 
+/* ---------- Переключатель языка ---------- */
+/* Та же форма, что у icon button, но с текстом: на одном сайте две языковые
+   версии, и ссылка на вторую должна быть видна в шапке сразу. */
+.lang-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: var(--md-sys-shape-corner-full);
+  color: var(--md-sys-color-on-surface-variant);
+  font: var(--md-sys-typescale-label-large-font);
+  letter-spacing: var(--md-sys-typescale-label-large-tracking);
+  transition: background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+              color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+.lang-btn:hover {
+  background: color-mix(in srgb, var(--md-sys-color-on-surface) calc(var(--md-sys-state-hover-opacity) * 100%), transparent);
+  color: var(--md-sys-color-on-surface);
+  text-decoration: none;
+}
+
 /* ---------- Icon button ---------- */
 .icon-btn {
   position: relative;
@@ -687,7 +708,7 @@ html.is-lightbox-open { overflow: hidden; }
   font: var(--md-sys-typescale-body-large-font);
   letter-spacing: var(--md-sys-typescale-body-large-tracking);
 }
-.cta-panel > .cta-note {
+.cta-note {
   margin-top: 20px;
   font: var(--md-sys-typescale-body-small-font);
   letter-spacing: var(--md-sys-typescale-body-small-tracking);

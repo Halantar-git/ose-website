@@ -5,6 +5,9 @@
   var root = document.documentElement;
   var STORAGE_KEY = 'ose-theme';
   var header = document.getElementById('header');
+  /* Разметка у русской и английской версий сайта своя, а скрипт общий: строки,
+     которые он дописывает сам, берём по языку страницы */
+  var isEn = root.lang === 'en';
 
   /* ---------- Тема ---------- */
 
@@ -126,10 +129,11 @@
      исчерпан лимит неавторизованных запросов к API), страница останется с ними. */
 
   var RELEASES_LATEST = 'https://api.github.com/repos/Halantar-git/open-stream-environment/releases/latest';
-  var MONTHS = [
-    'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
-    'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
-  ];
+  var MONTHS = isEn
+    ? ['January', 'February', 'March', 'April', 'May', 'June',
+       'July', 'August', 'September', 'October', 'November', 'December']
+    : ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+       'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
   var OS_KEYS = ['windows', 'linux', 'macos'];
   /* Файлы релиза под каждую систему — в порядке предпочтения */
   var OS_ASSETS = {
@@ -220,13 +224,17 @@
 
         var version = String(release.tag_name || '').replace(/^v/, '');
         var parts = String(release.published_at || '').slice(0, 10).split('-');
+        var day = Number(parts[2]);
         var month = MONTHS[Number(parts[1]) - 1];
 
         if (version) fill(versionSlots, version);
 
-        /* published_at — UTC; берём дату как есть, без сдвига на часовой пояс */
-        if (parts.length === 3 && month) {
-          fill(dateSlots, Number(parts[2]) + ' ' + month + ' ' + parts[0]);
+        /* published_at — UTC; берём дату как есть, без сдвига на часовой пояс.
+           Порядок частей разный: «16 сентября 2026» против «September 16, 2026» */
+        if (parts.length === 3 && month && day) {
+          fill(dateSlots, isEn
+            ? month + ' ' + day + ', ' + parts[0]
+            : day + ' ' + month + ' ' + parts[0]);
         }
 
         applyDownloadLinks(release.assets || []);
@@ -260,14 +268,14 @@
     box.hidden = true;
     box.setAttribute('role', 'dialog');
     box.setAttribute('aria-modal', 'true');
-    box.setAttribute('aria-label', 'Просмотр скриншота');
+    box.setAttribute('aria-label', isEn ? 'Screenshot preview' : 'Просмотр скриншота');
 
     boxImg.className = 'lightbox-img';
     boxImg.alt = '';
 
     boxClose.type = 'button';
     boxClose.className = 'icon-btn lightbox-close';
-    boxClose.setAttribute('aria-label', 'Закрыть');
+    boxClose.setAttribute('aria-label', isEn ? 'Close' : 'Закрыть');
     boxClose.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 
     box.appendChild(boxImg);

@@ -7,6 +7,9 @@
 <title>Open Stream Environment — визуальный редактор стрим-оверлея для OBS</title>
 <meta name="description" content="Стрим-оверлей и визуальный редактор раскладки на Electron: алерты, чат, цель доната, сцены и 3D-виджеты. Отдаётся в OBS как Browser Source.">
 <link rel="canonical" href="https://ose-overlay.ru/">
+<link rel="alternate" hreflang="ru" href="https://ose-overlay.ru/">
+<link rel="alternate" hreflang="en" href="https://ose-overlay.ru/en/">
+<link rel="alternate" hreflang="x-default" href="https://ose-overlay.ru/">
 
 <meta name="theme-color" content="#F9F9FF" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)">
@@ -77,6 +80,7 @@
     </nav>
 
     <div class="header-actions">
+      <a class="lang-btn" href="en/" hreflang="en" lang="en" title="English version">EN</a>
       <button class="icon-btn" id="theme-toggle" type="button" aria-label="Переключить тему">
         <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M18.7 5.3l-1.8 1.8M7.1 16.9l-1.8 1.8"/></svg>
         <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg>
@@ -145,7 +149,7 @@
         <article class="card">
           <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 3.5 8 12 12.5 20.5 8 12 3.5Z"/><path d="M4 12.5 12 17l8-4.5"/><path d="M4 16.5 12 21l8-4.5"/></svg></div>
           <h3>Сцены и пульты</h3>
-          <p>Полноэкранные сцены начала, перерыва, разговора, окончания, колеса и голосования. Управление с телефона через Web Remote, плагин Stream Deck и OBS WebSocket.</p>
+          <p>Полноэкранные сцены начала, перерыва, разговора, окончания, колеса и голосования. Управление с телефона через Web Remote, плагин Stream Deck и OBS WebSocket; клип и маркер стрима — кнопкой в шапке.</p>
         </article>
 
         <article class="card">
@@ -164,6 +168,24 @@
           <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 4.5 6.8v5.4c0 4 3.1 7.2 7.5 8.3 4.4-1.1 7.5-4.3 7.5-8.3V6.8L12 3.5Z"/><path d="M9.3 12.2l2 2 3.5-4"/></svg></div>
           <h3>Локально и приватно</h3>
           <p>Сервер Express и WebSocket работает на вашей машине, наружу ничего не уходит. Токены Twitch, DonationAlerts и YouTube шифруются системным хранилищем ОС, настройки пишутся атомарно и с бэкапами.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6.5 9H3.5v6h3L11 19V5Z"/><path d="M15 9.5a3.5 3.5 0 0 1 0 5"/><path d="M18 7a7 7 0 0 1 0 10"/></svg></div>
+          <h3>Звук, награды и озвучка</h3>
+          <p>Шумотека запускает звуки и анимации за баллы канала, награда может включить алерт, озвучку или сменить сцену, а текст доната зачитывается голосом (Web Speech API).</p>
+        </article>
+
+        <article class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/><path d="M12 3.5c-2.2 2.3-3.4 5.3-3.4 8.5s1.2 6.2 3.4 8.5c2.2-2.3 3.4-5.3 3.4-8.5s-1.2-6.2-3.4-8.5Z"/></svg></div>
+          <h3>Русский и английский</h3>
+          <p>Интерфейс панели управления, оверлея, сцен и колеса переведён на два языка. Переключение на лету, выбор сохраняется и применяется во всех открытых окнах.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12.5h4l2.5-5.5 3 10.5 2.5-5h6"/></svg></div>
+          <h3>Диагностика и надёжность</h3>
+          <p>Терминал логов с фильтром по сервису, <code>/healthz</code> для мониторинга, отчёт для поддержки без секретов. Бэкапы с откатом, карантин битых файлов и автообновление по кнопке.</p>
         </article>
       </div>
 
@@ -266,7 +288,7 @@
       <div class="faq">
         <details>
           <summary>Что нужно, чтобы запустить?</summary>
-          <p>Из исходников — Node.js 22.12+: <code>npm install</code>, затем <code>npm start</code>. Для обычного использования возьмите готовую сборку: приложение на Electron 43 работает на Windows, Linux и macOS.</p>
+          <p>Из исходников — Node.js 22.12+: <code>npm install</code>, затем <code>npm start</code>. Для обычного использования возьмите готовую сборку: установщик для Windows x64, AppImage и deb для Linux x64, dmg для macOS на Apple Silicon. Готового файла под Intel-мак нет.</p>
         </details>
         <details>
           <summary>Как добавить оверлей в OBS?</summary>
@@ -309,7 +331,7 @@
     <div class="wrap">
       <div class="cta-panel">
         <h2>Скачать Open Stream Environment</h2>
-        <p>Версия <span data-release-version>3.2.1</span> (<span data-release-date>16 сентября 2026</span>). Установщик для Windows, сборки для Linux и macOS. Бесплатно, под лицензией GPL.</p>
+        <p>Версия <span data-release-version>3.2.1</span> (<span data-release-date>16 сентября 2026</span>). Установщик для Windows x64, AppImage и deb для Linux x64, dmg для macOS (Apple Silicon). Бесплатно, под лицензией GPL.</p>
 
         <!-- Прямые ссылки на файлы релиза: адреса подставляет деплой, а main.js
              выделяет кнопку системы посетителя -->
@@ -346,6 +368,7 @@
       <a href="https://github.com/Halantar-git/open-stream-environment/blob/HEAD/CHANGELOG.md">История версий</a>
       <a href="https://github.com/Halantar-git/open-stream-environment/issues">Сообщить об ошибке</a>
       <a href="privacy.html">Политика конфиденциальности</a>
+      <a href="en/" hreflang="en" lang="en">English version</a>
     </nav>
 
     <p class="footer-legal">© <span id="year">2026</span> Halantar · Open Stream Environment · <a href="https://github.com/Halantar-git/open-stream-environment/blob/HEAD/LICENSE">лицензия GPL</a></p>

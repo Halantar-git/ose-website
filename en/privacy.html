@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy policy — Open Stream Environment</title>
+<meta name="description" content="What the ose-overlay.ru site and the Open Stream Environment app do with your data: the site collects nothing, the app keeps everything local and sends no data to the developer.">
+<link rel="canonical" href="https://ose-overlay.ru/en/privacy.html">
+<link rel="alternate" hreflang="ru" href="https://ose-overlay.ru/privacy.html">
+<link rel="alternate" hreflang="en" href="https://ose-overlay.ru/en/privacy.html">
+<link rel="alternate" hreflang="x-default" href="https://ose-overlay.ru/privacy.html">
+<meta name="theme-color" content="#F9F9FF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/img/app.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css">
+<script>
+  try {
+    var t = localStorage.getItem('ose-theme');
+    if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+  } catch (e) {}
+</script>
+</head>
+<body>
+
+<main class="section">
+  <div class="wrap wrap-narrow doc">
+    <p class="badge">Privacy policy</p>
+    <h1>What happens to your data</h1>
+    <p class="lead">In short: this site collects nothing, and the app keeps all data on your computer
+      only and sends none of it anywhere — except to the services you connect yourself.</p>
+
+    <h2>This site</h2>
+    <p>The page is static: no analytics, no counters, no ads, no cookies. The only thing stored in your
+      browser is the theme you picked (light or dark), and only in its local storage; it never goes to
+      a server and is deleted along with the site data in your browser settings.</p>
+    <p>There is one external request from the page: to <code>api.github.com</code> for the latest
+      version number and links to the build files. Only the request itself goes out through it — the
+      same as when you follow any link to <code>github.com</code>, which sees the IP address of whoever
+      asked. If the request fails, the page shows the values recorded at publish time. The other
+      external links point to GitHub, and GitHub's policy applies to them.</p>
+    <p>The site is served by GitHub Pages hosting, so GitHub sees the IP addresses of visitors — as
+      with any hosting. The site has no server side of its own.</p>
+
+    <h2>The app</h2>
+    <p>Open Stream Environment is an ordinary program for your computer. It has no account and no
+      developer server: there is nowhere to sign up and no need to.</p>
+    <ul>
+      <li>Settings, the overlay layout and the event history live in files next to the app — in the
+        data directory (on Windows that is <code>%APPDATA%\Open Stream Environment</code>; you can
+        open the folder from the settings).</li>
+      <li>Twitch, DonationAlerts and YouTube tokens, as well as the OBS WebSocket password, are
+        encrypted by the system credential store of your user account (DPAPI on Windows, Keychain on
+        macOS, libsecret on Linux) and are never stored or sent in plain text.</li>
+      <li>There is no telemetry, no analytics and no "phone home": the app sends no data to the
+        developer, neither at startup nor while it runs. You can check what goes out in the app log
+        and in the support report.</li>
+      <li>The only requests that go out are to the services you have connected: Twitch,
+        DonationAlerts, YouTube and OBS WebSocket. These are your tokens and your services, so their
+        privacy policies apply to that data.</li>
+      <li>The app's local server listens on a port and is reachable on the local network, but it can
+        only be controlled with an access code: other devices on the same network cannot switch
+        scenes. You can change the code in "Settings → Network access", and the old one then stops
+        working.</li>
+      <li>Support reports (the "Save report" button, <code>/support-bundle</code>) are collected
+        without secrets: token values never get into them, and only you send them.</li>
+      <li>To delete everything: "Reset database" in the settings, or remove the data directory
+        together with the history files.</li>
+    </ul>
+
+    <h2>Third parties</h2>
+    <p>The app connects directly to the services you have set up: Twitch, DonationAlerts, YouTube and
+      OBS. There is no intermediary between you and them, so their own policies apply to what goes
+      there. The app's developer has no access to it.</p>
+
+    <h2>Questions</h2>
+    <p>If something on this page disagrees with what the program does, that is a bug and it is worth
+      fixing: write to the repository
+      <a href="https://github.com/Halantar-git/open-stream-environment/issues">issues</a>. The app is
+      distributed under the GPL license, and the source code is open and available for review.</p>
+    <p>Last updated: September 18, 2026.</p>
+
+    <div class="cta-row">
+      <a class="btn btn-primary btn-lg" href="../">Back to the home page</a>
+      <a class="btn btn-ghost" href="https://github.com/Halantar-git/open-stream-environment">Repository</a>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <img class="brand-mark" src="../assets/img/app.svg" alt="" width="24" height="24">
+      <span>Open Stream Environment</span>
+    </div>
+    <p class="footer-legal">© <span id="year">2026</span> Halantar · Open Stream Environment · <a href="https://github.com/Halantar-git/open-stream-environment/blob/HEAD/LICENSE">GPL license</a> · <a href="../privacy.html" hreflang="ru" lang="ru">Русская версия</a></p>
+  </div>
+</footer>
+
+<script>
+  var yearEl = document.getElementById('year');
+  if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+  try {
+    var t = localStorage.getItem('ose-theme');
+    if (t === 'dark') {
+      document.querySelectorAll('meta[name="theme-color"]').forEach(function (m) {
+        m.removeAttribute('media');
+        m.setAttribute('content', '#111318');
+      });
+    }
+  } catch (e) {}
+</script>
+
+</body>
+</html>

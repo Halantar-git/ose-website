@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Open Stream Environment — a visual stream overlay editor for OBS</title>
+<meta name="description" content="A stream overlay and a visual layout editor on Electron: alerts, chat, donation goal, scenes and 3D widgets. Served to OBS as a Browser Source.">
+<link rel="canonical" href="https://ose-overlay.ru/en/">
+<link rel="alternate" hreflang="ru" href="https://ose-overlay.ru/">
+<link rel="alternate" hreflang="en" href="https://ose-overlay.ru/en/">
+<link rel="alternate" hreflang="x-default" href="https://ose-overlay.ru/">
+
+<meta name="theme-color" content="#F9F9FF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/img/app.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Open Stream Environment">
+<meta property="og:title" content="Open Stream Environment — a visual stream overlay editor for OBS">
+<meta property="og:description" content="A stream overlay in the style of Material Design 3 and a drag-and-drop layout editor. Served to OBS as a Browser Source.">
+<meta property="og:url" content="https://ose-overlay.ru/en/">
+<meta property="og:image" content="https://ose-overlay.ru/assets/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Open Stream Environment — a visual stream overlay editor for OBS">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="ru_RU">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="stylesheet" href="../assets/css/style.css">
+
+<!-- Тема и прозрачная шапка выставляются до отрисовки, чтобы не было вспышки -->
+<script>
+  try {
+    var t = localStorage.getItem('ose-theme');
+    if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+  } catch (e) {}
+
+  /* Наверху страницы шапка прозрачная — сквозь неё видны клинья фона (см. .site-header
+     в стилях). Флаг нужен до первой отрисовки: дальше его поддерживает main.js. */
+  if (window.scrollY <= 8) document.documentElement.classList.add('at-top');
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Open Stream Environment",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Windows, Linux, macOS",
+  "softwareVersion": "3.2.1",
+  "author": { "@type": "Person", "name": "Halantar" },
+  "description": "A stream overlay in the style of Material Design 3 and a visual layout editor on Electron: alerts, chat, donation goal, scenes, themes and 3D widgets.",
+  "license": "https://github.com/Halantar-git/open-stream-environment/blob/HEAD/LICENSE",
+  "softwareRequirements": "Windows 10+, Linux, macOS (Apple Silicon)",
+  "downloadUrl": "https://github.com/Halantar-git/open-stream-environment/releases/latest",
+  "inLanguage": "en",
+  "url": "https://ose-overlay.ru/en/",
+  "sameAs": "https://github.com/Halantar-git/open-stream-environment"
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header" id="header">
+  <div class="wrap header-inner">
+    <a class="brand" href="./" aria-label="Open Stream Environment — home">
+      <img class="brand-mark" src="../assets/img/app.svg" alt="" width="32" height="32">
+      <span class="brand-name">Open Stream Environment</span>
+    </a>
+
+    <nav class="nav" id="nav" aria-label="Main navigation">
+      <a href="#features">Features</a>
+      <a href="#screens">Screenshots</a>
+      <a href="#how">Quick start</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn btn-primary nav-cta" href="#download">Download</a>
+    </nav>
+
+    <div class="header-actions">
+      <a class="lang-btn" href="../" hreflang="ru" lang="ru" title="Русская версия">RU</a>
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch theme">
+        <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M18.7 5.3l-1.8 1.8M7.1 16.9l-1.8 1.8"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg>
+      </button>
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <p class="badge">Version <span data-release-version>3.2.1</span> · released <span data-release-date>September 16, 2026</span></p>
+        <h1>A stream overlay for OBS that you build with the mouse</h1>
+        <p class="lead">Open Stream Environment is an Electron app: a drag-and-drop layout editor, a local server and an overlay page you add to OBS as a Browser Source. Alerts, chat, the donation goal, scenes, themes and 3D widgets are set up in one window — and your data and tokens stay on your computer.</p>
+
+        <div class="cta-row">
+          <a class="btn btn-primary btn-lg" href="#download">Download</a>
+          <a class="btn btn-ghost btn-lg" href="#features">Features</a>
+        </div>
+
+        <ul class="hero-points">
+          <li>Drag and drop, resize, layers and properties</li>
+          <li>Served to OBS as an ordinary web page</li>
+          <li>Runs locally, secrets stay encrypted</li>
+        </ul>
+      </div>
+
+      <!-- Визуал в hero: главный экран редактора -->
+      <div class="hero-visual">
+        <div class="mock">
+          <a class="shot-link" href="../assets/img/main.webp" data-zoom>
+            <img src="../assets/img/main.webp" alt="Layout editor: a 16:9 canvas with the overlay preview, the widget library on the left, layers and properties on the right" width="1920" height="1032" fetchpriority="high">
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FEATURES ============ -->
+  <section class="section" id="features">
+    <div class="wrap">
+      <header class="section-head">
+        <h2>Features</h2>
+        <p class="section-sub">Everything a stream is made of: layout, alerts, scenes, themes and chat.</p>
+      </header>
+
+      <div class="grid grid-3">
+        <article class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16"/><path d="M11.5 11.5 14.7 18.8l1.3-2.9 2.9-1.3-7.4-3.1Z"/></svg></div>
+          <h3>A Figma-style editor</h3>
+          <p>A 16:9 canvas with a live overlay preview, the widget library on the left, layers and properties on the right. Drag, resize, a snapping grid, aspect ratios from 16:9 to 9:16 and layout presets.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9.5a6 6 0 0 1 12 0c0 4.5 2 5.5 2 5.5H4s2-1 2-5.5Z"/><path d="M10 18.5a2 2 0 0 0 4 0"/></svg></div>
+          <h3>One alert queue</h3>
+          <p>The server owns the queue, not the OBS page: Twitch, DonationAlerts and the Wheel feed one stream. Pause, "show now", merging donations from the same viewer — and the pause survives a restart.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 3.5 8 12 12.5 20.5 8 12 3.5Z"/><path d="M4 12.5 12 17l8-4.5"/><path d="M4 16.5 12 21l8-4.5"/></svg></div>
+          <h3>Scenes and remotes</h3>
+          <p>Full-screen scenes for start, break, just chatting, ending, the wheel and polls. Control from your phone with Web Remote, the Stream Deck plugin and OBS WebSocket; a clip and a stream marker are one button away in the toolbar.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 1 0 0 17c1.7 0 2.4-.9 2.4-1.8 0-1.6-1.3-1.9-1.3-2.8 0-.8.7-1.4 1.6-1.4h1.8a4.5 4.5 0 0 0 4.5-4.5c0-3.6-3.9-6.5-9-6.5Z"/><circle cx="8.3" cy="10.2" r="1"/><circle cx="12" cy="7.8" r="1"/><circle cx="15.8" cy="10.2" r="1"/></svg></div>
+          <h3>Themes, 3D included</h3>
+          <p>Material You, Orbital, Pixel Perfect, Elite and Nuclear, some with neon 3D widgets. Build your own theme in a dedicated editor: palette, panel shapes, fonts, glow and a WCAG contrast check.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 12c0 4-3.8 7.2-8.5 7.2-1 0-2-.15-2.9-.42L4 20.5l1.4-3.4A6.9 6.9 0 0 1 3.5 12c0-4 3.8-7.2 8.5-7.2s8.5 3.2 8.5 7.2Z"/></svg></div>
+          <h3>Chat, bot and moderation</h3>
+          <p>A Twitch chat window you can post from, a built-in bot with commands and timers, and auto-moderation: links, a banned-word list, caps and emote limits, warnings up to a ban.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 4.5 6.8v5.4c0 4 3.1 7.2 7.5 8.3 4.4-1.1 7.5-4.3 7.5-8.3V6.8L12 3.5Z"/><path d="M9.3 12.2l2 2 3.5-4"/></svg></div>
+          <h3>Local and private</h3>
+          <p>The Express and WebSocket server runs on your own machine and nothing goes out. Twitch, DonationAlerts and YouTube tokens are encrypted by the OS credential store, and settings are written atomically with backups.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6.5 9H3.5v6h3L11 19V5Z"/><path d="M15 9.5a3.5 3.5 0 0 1 0 5"/><path d="M18 7a7 7 0 0 1 0 10"/></svg></div>
+          <h3>Sound, rewards and read-aloud</h3>
+          <p>The soundboard plays sounds and animations for channel points, a reward can fire an alert, a spoken line or a scene switch, and donation text is read out loud in the overlay (Web Speech API).</p>
+        </article>
+
+        <article class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/><path d="M12 3.5c-2.2 2.3-3.4 5.3-3.4 8.5s1.2 6.2 3.4 8.5c2.2-2.3 3.4-5.3 3.4-8.5s-1.2-6.2-3.4-8.5Z"/></svg></div>
+          <h3>English and Russian</h3>
+          <p>The control panel, overlay, scenes and wheel are translated into both languages. Switch on the fly — the choice is saved and applied in every open window.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12.5h4l2.5-5.5 3 10.5 2.5-5h6"/></svg></div>
+          <h3>Diagnostics that hold up</h3>
+          <p>A log terminal with per-service filtering, <code>/healthz</code> for monitoring and a support report with no secrets in it. Backups with manual rollback, quarantine for corrupt files and a one-click updater.</p>
+        </article>
+      </div>
+
+      <div class="chips-block">
+        <p class="chips-caption">Widgets you can drop on the canvas</p>
+        <ul class="chips">
+          <li class="chip">Alerts</li>
+          <li class="chip">Donation goal</li>
+          <li class="chip">Twitch chat</li>
+          <li class="chip">Recent events</li>
+          <li class="chip">Counter</li>
+          <li class="chip">Social banner</li>
+          <li class="chip">Executive Hangar timer</li>
+          <li class="chip">Mic visualizer</li>
+          <li class="chip">Wheel of Fortune</li>
+          <li class="chip">Viewer giveaway</li>
+          <li class="chip">Polls</li>
+          <li class="chip">Custom widget</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREENSHOTS ============ -->
+  <section class="section section-soft" id="screens">
+    <div class="wrap">
+      <header class="section-head">
+        <h2>Screenshots</h2>
+        <p class="section-sub">The editor, settings, scenes and 3D widgets.</p>
+      </header>
+
+      <!-- alt-тексты написаны по именам файлов — поправьте под то, что на экранах -->
+      <div class="shots">
+        <a class="shot" href="../assets/img/ed-3.webp" data-zoom>
+          <img src="../assets/img/ed-3.webp" alt="The layout editor screen" loading="lazy" width="1919" height="1079">
+        </a>
+        <a class="shot" href="../assets/img/wheel-new.webp" data-zoom>
+          <img src="../assets/img/wheel-new.webp" alt="Wheel of Fortune: a pseudo-3D drum" loading="lazy" width="1920" height="1031">
+        </a>
+        <a class="shot" href="../assets/img/poll.webp" data-zoom>
+          <img src="../assets/img/poll.webp" alt="Poll scene: a live chart" loading="lazy" width="1920" height="1080">
+        </a>
+        <a class="shot" href="../assets/img/poll2.webp" data-zoom>
+          <img src="../assets/img/poll2.webp" alt="Poll scene: another chart type" loading="lazy" width="1920" height="1080">
+        </a>
+        <a class="shot" href="../assets/img/scene.webp" data-zoom>
+          <img src="../assets/img/scene.webp" alt="A full-screen scene for OBS" loading="lazy" width="1920" height="1032">
+        </a>
+        <a class="shot" href="../assets/img/term.webp" data-zoom>
+          <img src="../assets/img/term.webp" alt="The log terminal in the control panel" loading="lazy" width="1920" height="1032">
+        </a>
+        <a class="shot" href="../assets/img/hud-mode.webp" data-zoom>
+          <img src="../assets/img/hud-mode.webp" alt="HUD edit mode over a game" loading="lazy" width="1919" height="1079">
+        </a>
+        <a class="shot shot--tall" href="../assets/img/remote1.webp" data-zoom>
+          <img src="../assets/img/remote1.webp" alt="Web Remote on a phone: the controls" loading="lazy" width="502" height="841">
+        </a>
+        <a class="shot shot--tall" href="../assets/img/remote2.webp" data-zoom>
+          <img src="../assets/img/remote2.webp" alt="Web Remote on a phone: the chat tab" loading="lazy" width="502" height="841">
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOW ============ -->
+  <section class="section" id="how">
+    <div class="wrap">
+      <header class="section-head">
+        <h2>Quick start</h2>
+        <p class="section-sub">From <code>npm install</code> to an overlay in OBS in three steps.</p>
+      </header>
+
+      <ol class="steps">
+        <li>
+          <span class="step-num">1</span>
+          <h3>Install</h3>
+          <p>Node.js 22.12+ is required. Run <code>npm install</code>, then <code>npm start</code> — the control panel window opens.</p>
+        </li>
+        <li>
+          <span class="step-num">2</span>
+          <h3>Add the overlay to OBS</h3>
+          <p>Sources → + → Browser Source: the URL <code>http://localhost:8710/overlay/overlay.html</code>, resolution 1920×1080, source FPS 30. The background is transparent out of the box.</p>
+        </li>
+        <li>
+          <span class="step-num">3</span>
+          <h3>Build your layout</h3>
+          <p>Drag widgets in from the library, set the grid and the canvas aspect ratio, save the layout as a preset. Scenes and intermission videos live on their own tabs.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="section section-soft" id="faq">
+    <div class="wrap wrap-narrow">
+      <header class="section-head">
+        <h2>Frequently asked</h2>
+      </header>
+
+      <div class="faq">
+        <details>
+          <summary>What do I need to run it?</summary>
+          <p>From source you need Node.js 22.12+: <code>npm install</code>, then <code>npm start</code>. For everyday use grab a ready build: a Windows x64 installer, AppImage and deb for Linux x64, a dmg for macOS on Apple Silicon. There is no prebuilt file for Intel Macs.</p>
+        </details>
+        <details>
+          <summary>How do I add the overlay to OBS?</summary>
+          <p>The overlay is an ordinary web page, so in OBS it is a Browser Source: the URL <code>http://localhost:8710/overlay/overlay.html</code>, resolution 1920×1080, source FPS 30. Turn on "Shutdown source when not visible" — hidden scenes then fall asleep completely.</p>
+        </details>
+        <details>
+          <summary>Do I need Twitch and DonationAlerts accounts?</summary>
+          <p>Chat is read anonymously — the channel name is enough. Alerts for follows, subscriptions, bits and donations need your own apps: a Client ID and Client Secret from dev.twitch.tv and donationalerts.com, plus authorization. Posting to chat also needs Twitch connected.</p>
+        </details>
+        <details>
+          <summary>Where are the settings and the history stored?</summary>
+          <p>On your computer only: <code>config.json</code> and <code>local-db.json</code> in the data directory (on Windows, <code>%APPDATA%\Open Stream Environment</code>). Event and chat history live in the append-only <code>local-db.jsonl</code> and <code>local-db.chat.jsonl</code>. Backups <code>.bak.0…2</code> are kept next to them, and a corrupt file goes to quarantine and is restored from a copy.</p>
+        </details>
+        <details>
+          <summary>Donations are not arriving — where do I look?</summary>
+          <p>At the "DA" panel in the toolbar: connection state, token health, quick actions and a live log for DonationAlerts alone. The "Fetch missed" button is there too — it needs the <code>oauth-donation-index</code> scope, and tokens issued earlier do not get it, so the app has to be deleted and created again in the DonationAlerts dashboard.</p>
+        </details>
+        <details>
+          <summary>Will the overlay show up over a full-screen game?</summary>
+          <p>HUD editing and the "chat over game" window work over windowed and borderless games. An exclusive full-screen mode covers the overlay.</p>
+        </details>
+        <details>
+          <summary>How much does the app cost?</summary>
+          <p>Nothing. The project is open and distributed under the GPL license — the code, the builds and the change history live in the <a href="https://github.com/Halantar-git/open-stream-environment">repository on GitHub</a>.</p>
+        </details>
+        <details>
+          <summary>How do I report a bug?</summary>
+          <p>Open an issue in the <a href="https://github.com/Halantar-git/open-stream-environment/issues">repository on GitHub</a> and attach the report from the "Save report" button (or <code>GET /support-bundle</code>) — there are no secrets in it.</p>
+        </details>
+        <details>
+          <summary>Where can I read the version history?</summary>
+          <p>In the repository's <a href="https://github.com/Halantar-git/open-stream-environment/blob/HEAD/CHANGELOG.md">CHANGELOG.md</a>. The current version is <span data-release-version>3.2.1</span> (<span data-release-date>September 16, 2026</span>).</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DOWNLOAD ============ -->
+  <section class="section" id="download">
+    <div class="wrap">
+      <div class="cta-panel">
+        <h2>Download Open Stream Environment</h2>
+        <p>Version <span data-release-version>3.2.1</span> (<span data-release-date>September 16, 2026</span>). A Windows x64 installer, AppImage and deb for Linux x64, a dmg for macOS (Apple Silicon). Free, under the GPL license.</p>
+
+        <!-- Прямые ссылки на файлы релиза: адреса подставляет деплой, а main.js
+             выделяет кнопку системы посетителя -->
+        <div class="cta-row cta-row-center os-row">
+          <a class="btn btn-ghost btn-os btn-lg" href="https://github.com/Halantar-git/open-stream-environment/releases/latest" data-download-os="windows"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M0,0H11.377V11.372H0ZM12.623,0H24V11.372H12.623ZM0,12.623H11.377V24H0Zm12.623,0H24V24H12.623"/></svg>Windows</a>
+          <a class="btn btn-ghost btn-os btn-lg" href="https://github.com/Halantar-git/open-stream-environment/releases/latest" data-download-os="linux"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.832-.41 1.684-.287 2.489a.424.424 0 00-.11.135c-.26.268-.45.6-.663.839-.199.199-.485.267-.797.4-.313.136-.658.269-.864.68-.09.189-.136.394-.132.602 0 .199.027.4.055.536.058.399.116.728.04.97-.249.68-.28 1.145-.106 1.484.174.334.535.47.94.601.81.2 1.91.135 2.774.6.926.466 1.866.67 2.616.47.526-.116.97-.464 1.208-.946.587-.003 1.23-.269 2.26-.334.699-.058 1.574.267 2.577.2.025.134.063.198.114.333l.003.003c.391.778 1.113 1.132 1.884 1.071.771-.06 1.592-.536 2.257-1.306.631-.765 1.683-1.084 2.378-1.503.348-.199.629-.469.649-.853.023-.4-.2-.811-.714-1.376v-.097l-.003-.003c-.17-.2-.25-.535-.338-.926-.085-.401-.182-.786-.492-1.046h-.003c-.059-.054-.123-.067-.188-.135a.357.357 0 00-.19-.064c.431-1.278.264-2.55-.173-3.694-.533-1.41-1.465-2.638-2.175-3.483-.796-1.005-1.576-1.957-1.56-3.368.026-2.152.236-6.133-3.544-6.139zm.529 3.405h.013c.213 0 .396.062.584.198.19.135.33.332.438.533.105.259.158.459.166.724 0-.02.006-.04.006-.06v.105a.086.086 0 01-.004-.021l-.004-.024a1.807 1.807 0 01-.15.706.953.953 0 01-.213.335.71.71 0 00-.088-.042c-.104-.045-.198-.064-.284-.133a1.312 1.312 0 00-.22-.066c.05-.06.146-.133.183-.198.053-.128.082-.264.088-.402v-.02a1.21 1.21 0 00-.061-.4c-.045-.134-.101-.2-.183-.333-.084-.066-.167-.132-.267-.132h-.016c-.093 0-.176.03-.262.132a.8.8 0 00-.205.334 1.18 1.18 0 00-.09.4v.019c.002.089.008.179.02.267-.193-.067-.438-.135-.607-.202a1.635 1.635 0 01-.018-.2v-.02a1.772 1.772 0 01.15-.768c.082-.22.232-.406.43-.533a.985.985 0 01.594-.2zm-2.962.059h.036c.142 0 .27.048.399.135.146.129.264.288.344.465.09.199.14.4.153.667v.004c.007.134.006.2-.002.266v.08c-.03.007-.056.018-.083.024-.152.055-.274.135-.393.2.012-.09.013-.18.003-.267v-.015c-.012-.133-.04-.2-.082-.333a.613.613 0 00-.166-.267.248.248 0 00-.183-.064h-.021c-.071.006-.13.04-.186.132a.552.552 0 00-.12.27.944.944 0 00-.023.33v.015c.012.135.037.2.08.334.046.134.098.2.166.268.01.009.02.018.034.024-.07.057-.117.07-.176.136a.304.304 0 01-.131.068 2.62 2.62 0 01-.275-.402 1.772 1.772 0 01-.155-.667 1.759 1.759 0 01.08-.668 1.43 1.43 0 01.283-.535c.128-.133.26-.2.418-.2zm1.37 1.706c.332 0 .733.065 1.216.399.293.2.523.269 1.052.468h.003c.255.136.405.266.478.399v-.131a.571.571 0 01.016.47c-.123.31-.516.643-1.063.842v.002c-.268.135-.501.333-.775.465-.276.135-.588.292-1.012.267a1.139 1.139 0 01-.448-.067 3.566 3.566 0 01-.322-.198c-.195-.135-.363-.332-.612-.465v-.005h-.005c-.4-.246-.616-.512-.686-.71-.07-.268-.005-.47.193-.6.224-.135.38-.271.483-.336.104-.074.143-.102.176-.131h.002v-.003c.169-.202.436-.47.839-.601.139-.036.294-.065.466-.065zm2.8 2.142c.358 1.417 1.196 3.475 1.735 4.473.286.534.855 1.659 1.102 3.024.156-.005.33.018.513.064.646-1.671-.546-3.467-1.089-3.966-.22-.2-.232-.335-.123-.335.59.534 1.365 1.572 1.646 2.757.13.535.16 1.104.021 1.67.067.028.135.06.205.067 1.032.534 1.413.938 1.23 1.537v-.043c-.06-.003-.12 0-.18 0h-.016c.151-.467-.182-.825-1.065-1.224-.915-.4-1.646-.336-1.77.465-.008.043-.013.066-.018.135-.068.023-.139.053-.209.064-.43.268-.662.669-.793 1.187-.13.533-.17 1.156-.205 1.869v.003c-.02.334-.17.838-.319 1.35-1.5 1.072-3.58 1.538-5.348.334a2.645 2.645 0 00-.402-.533 1.45 1.45 0 00-.275-.333c.182 0 .338-.03.465-.067a.615.615 0 00.314-.334c.108-.267 0-.697-.345-1.163-.345-.467-.931-.995-1.788-1.521-.63-.4-.986-.87-1.15-1.396-.165-.534-.143-1.085-.015-1.645.245-1.07.873-2.11 1.274-2.763.107-.065.037.135-.408.974-.396.751-1.14 2.497-.122 3.854a8.123 8.123 0 01.647-2.876c.564-1.278 1.743-3.504 1.836-5.268.048.036.217.135.289.202.218.133.38.333.59.465.21.201.477.335.876.335.039.003.075.006.11.006.412 0 .73-.134.997-.268.29-.134.52-.334.74-.4h.005c.467-.135.835-.402 1.044-.7zm2.185 8.958c.037.6.343 1.245.882 1.377.588.134 1.434-.333 1.791-.765l.211-.01c.315-.007.577.01.847.268l.003.003c.208.199.305.53.391.876.085.4.154.78.409 1.066.486.527.645.906.636 1.14l.003-.007v.018l-.003-.012c-.015.262-.185.396-.498.595-.63.401-1.746.712-2.457 1.57-.618.737-1.37 1.14-2.036 1.191-.664.053-1.237-.2-1.574-.898l-.005-.003c-.21-.4-.12-1.025.056-1.69.176-.668.428-1.344.463-1.897.037-.714.076-1.335.195-1.814.12-.465.308-.797.641-.984l.045-.022zm-10.814.049h.01c.053 0 .105.005.157.014.376.055.706.333 1.023.752l.91 1.664.003.003c.243.533.754 1.064 1.189 1.637.434.598.77 1.131.729 1.57v.006c-.057.744-.48 1.148-1.125 1.294-.645.135-1.52.002-2.395-.464-.968-.536-2.118-.469-2.857-.602-.369-.066-.61-.2-.723-.4-.11-.2-.113-.602.123-1.23v-.004l.002-.003c.117-.334.03-.752-.027-1.118-.055-.401-.083-.71.043-.94.16-.334.396-.4.69-.533.294-.135.64-.202.915-.47h.002v-.002c.256-.268.445-.601.668-.838.19-.201.38-.336.663-.336zm7.159-9.074c-.435.201-.945.535-1.488.535-.542 0-.97-.267-1.28-.466-.154-.134-.28-.268-.373-.335-.164-.134-.144-.333-.074-.333.109.016.129.134.199.2.096.066.215.2.36.333.292.2.68.467 1.167.467.485 0 1.053-.267 1.398-.466.195-.135.445-.334.648-.467.156-.136.149-.267.279-.267.128.016.034.134-.147.332a8.097 8.097 0 01-.69.468zm-1.082-1.583V5.64c-.006-.02.013-.042.029-.05.074-.043.18-.027.26.004.063 0 .16.067.15.135-.006.049-.085.066-.135.066-.055 0-.092-.043-.141-.068-.052-.018-.146-.008-.163-.065zm-.551 0c-.02.058-.113.049-.166.066-.047.025-.086.068-.14.068-.05 0-.13-.02-.136-.068-.01-.066.088-.133.15-.133.08-.031.184-.047.259-.005.019.009.036.03.03.05v.02h.003z"/></svg>Linux</a>
+          <a class="btn btn-ghost btn-os btn-lg" href="https://github.com/Halantar-git/open-stream-environment/releases/latest" data-download-os="macos"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>macOS</a>
+        </div>
+
+        <div class="cta-row cta-row-center">
+          <a class="btn btn-ghost" href="https://github.com/Halantar-git/open-stream-environment#readme">Build from source</a>
+        </div>
+
+        <p class="cta-note">All the files and the version history are <a href="https://github.com/Halantar-git/open-stream-environment/releases">on GitHub Releases</a>.</p>
+
+        <p class="cta-note">The builds are unsigned: macOS will ask you to confirm the first launch, Windows may show a SmartScreen warning. Auto-update only sees published releases.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <img class="brand-mark" src="../assets/img/app.svg" alt="" width="24" height="24">
+      <span>Open Stream Environment</span>
+    </div>
+
+    <nav class="footer-nav" aria-label="Footer links">
+      <a href="#features">Features</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://github.com/Halantar-git/open-stream-environment">GitHub</a>
+      <a href="https://github.com/Halantar-git/open-stream-environment/blob/HEAD/CHANGELOG.md">Version history</a>
+      <a href="https://github.com/Halantar-git/open-stream-environment/issues">Report a bug</a>
+      <a href="privacy.html">Privacy policy</a>
+      <a href="../" hreflang="ru" lang="ru">Русская версия</a>
+    </nav>
+
+    <p class="footer-legal">© <span id="year">2026</span> Halantar · Open Stream Environment · <a href="https://github.com/Halantar-git/open-stream-environment/blob/HEAD/LICENSE">GPL license</a></p>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>
