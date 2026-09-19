@@ -27,12 +27,16 @@
 
 <link rel="stylesheet" href="assets/css/style.css">
 
-<!-- Тема выставляется до отрисовки, чтобы не было вспышки светлого фона -->
+<!-- Тема и прозрачная шапка выставляются до отрисовки, чтобы не было вспышки -->
 <script>
   try {
     var t = localStorage.getItem('ose-theme');
     if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
   } catch (e) {}
+
+  /* Наверху страницы шапка прозрачная — сквозь неё видны клинья фона (см. .site-header
+     в стилях). Флаг нужен до первой отрисовки: дальше его поддерживает main.js. */
+  if (window.scrollY <= 8) document.documentElement.classList.add('at-top');
 </script>
 
 <script type="application/ld+json">

@@ -265,6 +265,12 @@ a:hover { text-decoration: underline; }
   transition: background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
               box-shadow var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
 }
+/* Пока страница наверху, у шапки нет своей заливки — и клинья фона
+   (body::before/::after) проходят сквозь неё, не обрываясь на её высоте.
+   Клинья шире полосы контента, поэтому под брендом и меню их не бывает.
+   Флаг at-top ставит скрипт в <head> до первой отрисовки, дальше его
+   поддерживает main.js; без JS шапка остаётся залитой, как раньше. */
+html.at-top .site-header { background: transparent; }
 .site-header.is-scrolled {
   background: var(--md-sys-color-surface-container);
   box-shadow: var(--md-sys-elevation-level2);

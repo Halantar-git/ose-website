@@ -82,7 +82,11 @@
 
   if (header) {
     var onScroll = function () {
-      header.classList.toggle('is-scrolled', window.scrollY > 8);
+      var atTop = window.scrollY <= 8;
+      /* at-top — на самом верху шапка прозрачная, чтобы сквозь неё шли клинья фона;
+         is-scrolled — обычная залитая шапка с тенью */
+      root.classList.toggle('at-top', atTop);
+      header.classList.toggle('is-scrolled', !atTop);
     };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
