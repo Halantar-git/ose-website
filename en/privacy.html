@@ -33,11 +33,11 @@
     <p>The page is static: no analytics, no counters, no ads, no cookies. The only thing stored in your
       browser is the theme you picked (light or dark), and only in its local storage; it never goes to
       a server and is deleted along with the site data in your browser settings.</p>
-    <p>There is one external request from the page: to <code>api.github.com</code> for the latest
-      version number and links to the build files. Only the request itself goes out through it — the
-      same as when you follow any link to <code>github.com</code>, which sees the IP address of whoever
-      asked. If the request fails, the page shows the values recorded at publish time. The other
-      external links point to GitHub, and GitHub's policy applies to them.</p>
+    <p>The page makes no network requests of its own: the version number, the build date and the file
+      links are text written into it when the site is published. The only things loaded are its own
+      files — markup, styles, script and images — and all from the same host.</p>
+    <p>Links to GitHub are ordinary navigations: GitHub sees your IP address only if you follow such a
+      link, and GitHub's policy applies to that.</p>
     <p>The site is served by GitHub Pages hosting, so GitHub sees the IP addresses of visitors — as
       with any hosting. The site has no server side of its own.</p>
 

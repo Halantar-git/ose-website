@@ -1,4 +1,4 @@
-/* OSE — лендинг: тема, мобильное меню, состояние шапки, версия из релизов, просмотр скриншотов, год в подвале */
+/* OSE — лендинг: тема, мобильное меню, состояние шапки, кнопка системы посетителя, просмотр скриншотов, год в подвале */
 (function () {
   'use strict';
 
@@ -124,33 +124,15 @@
   var yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
-  /* ---------- Версия и сборки из последнего релиза приложения ----------
-     В разметке стоят значения на момент вёрстки: если запрос не пройдёт (нет сети,
-     исчерпан лимит неавторизованных запросов к API), страница останется с ними. */
+  /* ---------- Кнопка системы посетителя ----------
+     Версия, дата сборки и адреса файлов уже стоят в разметке: их подставляет
+     деплой (.github/stamp-release.py) по токену workflow, поэтому странице
+     не нужен ни один свой сетевой запрос. Здесь только подсветка кнопки той
+     системы, в которой открыта страница. */
 
-  var RELEASES_LATEST = 'https://api.github.com/repos/Halantar-git/open-stream-environment/releases/latest';
-  var MONTHS = isEn
-    ? ['January', 'February', 'March', 'April', 'May', 'June',
-       'July', 'August', 'September', 'October', 'November', 'December']
-    : ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
-       'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
-  var OS_KEYS = ['windows', 'linux', 'macos'];
-  /* Файлы релиза под каждую систему — в порядке предпочтения */
-  var OS_ASSETS = {
-    windows: [/-setup\.exe$/i, /\.exe$/i],
-    linux: [/\.AppImage$/i, /\.deb$/i],
-    macos: [/\.dmg$/i, /-mac\.zip$/i]
-  };
-
-  var versionSlots = document.querySelectorAll('[data-release-version]');
-  var dateSlots = document.querySelectorAll('[data-release-date]');
   var osDownloads = document.querySelectorAll('[data-download-os]');
 
-  if ((versionSlots.length || dateSlots.length || osDownloads.length) && window.fetch) {
-    var fill = function (nodes, text) {
-      for (var i = 0; i < nodes.length; i++) nodes[i].textContent = text;
-    };
-
+  if (osDownloads.length) {
     /* Систему смотрим в браузере: в Chromium есть userAgentData, у остальных — строка UA */
     var detectOS = function () {
       var ua = navigator.userAgent || '';
@@ -173,17 +155,7 @@
       return '';
     };
 
-    var findAsset = function (assets, patterns) {
-      for (var p = 0; p < patterns.length; p++) {
-        for (var i = 0; i < assets.length; i++) {
-          if (patterns[p].test(assets[i].name || '')) return assets[i];
-        }
-      }
-      return null;
-    };
-
-    /* Кнопку системы посетителя выделяем заливкой; запрос к API для этого не нужен.
-       btn-ghost убираем: в стилях он идёт после btn-primary и перебил бы заливку */
+    /* btn-ghost убираем: в стилях он идёт после btn-primary и перебил бы заливку */
     var highlightOS = function () {
       var os = detectOS();
       if (!os) return;
@@ -196,60 +168,6 @@
     };
 
     highlightOS();
-
-    /* Освежение поверх деплоя: если запрос прошёл, берём адреса из самого релиза */
-    var applyDownloadLinks = function (assets) {
-      var i;
-      var j;
-      var asset;
-
-      for (i = 0; i < OS_KEYS.length; i++) {
-        asset = findAsset(assets, OS_ASSETS[OS_KEYS[i]]);
-        if (!asset) continue;
-
-        for (j = 0; j < osDownloads.length; j++) {
-          if (osDownloads[j].getAttribute('data-download-os') === OS_KEYS[i]) {
-            osDownloads[j].href = asset.browser_download_url;
-          }
-        }
-      }
-    };
-
-    window.fetch(RELEASES_LATEST, { headers: { accept: 'application/vnd.github+json' } })
-      .then(function (response) {
-        return response.ok ? response.json() : null;
-      })
-      .then(function (release) {
-        if (!release) return;
-
-        var version = String(release.tag_name || '').replace(/^v/, '');
-        var parts = String(release.published_at || '').slice(0, 10).split('-');
-        var day = Number(parts[2]);
-        var month = MONTHS[Number(parts[1]) - 1];
-
-        if (version) fill(versionSlots, version);
-
-        /* published_at — UTC; берём дату как есть, без сдвига на часовой пояс.
-           Порядок частей разный: «16 сентября 2026» против «September 16, 2026» */
-        if (parts.length === 3 && month && day) {
-          fill(dateSlots, isEn
-            ? month + ' ' + day + ', ' + parts[0]
-            : day + ' ' + month + ' ' + parts[0]);
-        }
-
-        applyDownloadLinks(release.assets || []);
-
-        /* Тот же номер — в разметке для поисковиков */
-        var ld = document.querySelector('script[type="application/ld+json"]');
-        if (ld && version) {
-          try {
-            var data = JSON.parse(ld.textContent);
-            data.softwareVersion = version;
-            ld.textContent = JSON.stringify(data, null, 2);
-          } catch (e) {}
-        }
-      })
-      .catch(function () {});
   }
 
   /* ---------- Просмотр скриншотов ----------

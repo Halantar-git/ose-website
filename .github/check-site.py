@@ -11,6 +11,7 @@
     прыгает при загрузке, а картинка растягивается);
   * og:image совпадает по размеру со своим файлом;
   * canonical и hreflang ведут туда, куда обещают, у обеих языковых версий;
+  * со страниц не уходит ни одного своего запроса к чужим серверам;
   * места для подстановки релиза (версия, дата, кнопки) на месте;
   * stamp-release.py действительно подставляет данные тестового релиза —
     на русской странице по-русски, на английской по-английски.
@@ -38,6 +39,9 @@ ATTR = re.compile(r'(\w[\w-]*)="([^"]*)"')
 
 RASTER = ('.png', '.jpg', '.jpeg', '.webp')
 SKIP_SCHEMES = ('http://', 'https://', '//', 'mailto:', 'tel:', 'data:', 'javascript:')
+
+# Следы запросов к чужим серверам — их в статике быть не должно (см. политику)
+EXTERNAL = ('api.github.com', 'XMLHttpRequest', 'sendBeacon')
 
 # Кнопок скачивания и мест под версию с датой — по три (по одной на систему)
 PLACEHOLDERS = {'data-release-version': 3, 'data-release-date': 3, 'data-download-os': 3}
@@ -125,6 +129,20 @@ def image_size(path):
     if path.lower().endswith('.svg'):
         return svg_size(read(path))
     return None
+
+
+def check_no_external_requests():
+    """Страница должна обходиться без своих сетевых запросов — так написано в политике."""
+    for folder, dirs, names in os.walk(ROOT):
+        dirs[:] = [name for name in dirs if name != '.git']
+        for name in sorted(names):
+            if not name.endswith(('.html', '.js')):
+                continue
+            path = os.path.join(folder, name)
+            text = read(path)
+            for probe in EXTERNAL:
+                if probe in text:
+                    fail(f'{os.path.relpath(path, ROOT)}: похоже на запрос к чужому серверу — «{probe}»')
 
 
 def check_links(page):
@@ -275,6 +293,8 @@ def main():
         check_placeholders(page, html)
         check_stamp(page, html)
 
+    check_no_external_requests()
+
     for note in notes:
         print(f'? {note}')
     for message in errors:
@@ -284,7 +304,7 @@ def main():
         print(f'\nне прошло проверок: {len(errors)}')
         return 1
 
-    print('всё сошлось: ссылки, размеры картинок, места подстановки и сам подстановщик')
+    print('всё сошлось: ссылки, размеры картинок, hreflang, места подстановки и сам подстановщик')
     return 0
 
 
