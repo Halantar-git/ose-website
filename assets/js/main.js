@@ -101,7 +101,7 @@
 
   if (!reduceMotion) {
     document.addEventListener('pointerdown', function (event) {
-      var host = event.target.closest ? event.target.closest('.btn, .icon-btn') : null;
+      var host = event.target.closest ? event.target.closest('.btn, .icon-btn, .to-top') : null;
       if (!host) return;
 
       var rect = host.getBoundingClientRect();
@@ -254,4 +254,37 @@
       if (event.key === 'Escape') closeBox();
     });
   }
+
+  /* ---------- Кнопка «Наверх» ----------
+     Появляется, когда пролистано больше экрана: на коротких страницах
+     (политика, 404) её тогда просто не будет. */
+
+  var toTop = document.createElement('button');
+
+  toTop.type = 'button';
+  toTop.className = 'to-top';
+  toTop.hidden = true;
+  /* На узком экране подпись скрыта, поэтому имя кнопки задаём явно */
+  toTop.setAttribute('aria-label', isEn ? 'Back to top' : 'Наверх');
+  toTop.innerHTML =
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5"/><path d="M5.5 11.5 12 5l6.5 6.5"/></svg>' +
+    '<span class="to-top-label">' + (isEn ? 'Top' : 'Наверх') + '</span>';
+
+  document.body.appendChild(toTop);
+
+  toTop.addEventListener('click', function () {
+    /* Плавность берём из CSS (html { scroll-behavior: smooth }): при
+       prefers-reduced-motion она там же отключена, и переход остаётся мгновенным */
+    window.scrollTo({ top: 0 });
+  });
+
+  var tuneToTop = function () {
+    /* Порог — экран, но не больше половины доступной прокрутки: на странице
+       в полтора экрана кнопка нужна именно внизу, а не после первого экрана */
+    var max = Math.max(0, root.scrollHeight - window.innerHeight);
+    toTop.hidden = window.scrollY <= Math.min(window.innerHeight, max / 2);
+  };
+
+  tuneToTop();
+  window.addEventListener('scroll', tuneToTop, { passive: true });
 })();
