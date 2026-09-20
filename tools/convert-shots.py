@@ -31,22 +31,22 @@ import time
 
 from PIL import Image
 
-# PNG в папке скриншотов -> имя, которое ждёт разметка
+# PNG в папке скриншотов -> имя, которое ждёт разметка.
+# Не конвертируются снимки, убранные из галереи: `OSE_wheel_new.png` (Колесо Фортуны),
+# `remote1.png` и `remote2.png` (их заменил один `remote_full.png`), `poll.png`
+# (та же сцена голосования, что в `poll2.png`, только с другим типом диаграммы).
 PAIRS = [
-    ('main.png', 'main.webp'),           # hero: редактор раскладки
+    ('main.png', 'main.webp'),                  # hero: редактор раскладки
+    # галерея #screens — в том же порядке, что на странице
     ('ED_3.png', 'ed-3.webp'),
-    ('OSE_wheel_new.png', 'wheel-new.webp'),
-    ('poll.png', 'poll.webp'),
+    ('stream_sc.png', 'stream-sc.webp'),
     ('poll2.png', 'poll2.webp'),
     ('scene.png', 'scene.webp'),
     ('term.png', 'term.webp'),
-    ('HUD_mode.png', 'hud-mode.webp'),
-    ('remote1.png', 'remote1.webp'),
-    ('remote2.png', 'remote2.webp'),
-    # сконвертированы заранее, в разметке пока не используются
     ('history.png', 'history.webp'),
-    ('stream_sc.png', 'stream-sc.webp'),
     ('wheel_cfg.png', 'wheel-cfg.webp'),
+    ('HUD_mode.png', 'hud-mode.webp'),
+    ('remote_full.png', 'remote-full.webp'),    # пульт целиком: заменяет remote1 и remote2
 ]
 
 # Выше этого размера сохранять без потерь уже невыгодно
