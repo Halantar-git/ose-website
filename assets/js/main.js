@@ -246,12 +246,9 @@
       });
     }
 
-    /* Клик мимо картинки закрывает */
-    box.addEventListener('click', function (event) {
-      if (event.target === box) closeBox();
-    });
-
-    boxClose.addEventListener('click', closeBox);
+    /* Клик по просмотру закрывает — и по картинке, и мимо неё. Кнопке «Закрыть»
+       отдельный обработчик не нужен: её клик всплывает сюда же. */
+    box.addEventListener('click', closeBox);
 
     document.addEventListener('keydown', function (event) {
       if (event.key === 'Escape') closeBox();
