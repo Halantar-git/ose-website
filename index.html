@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Open Stream Environment — визуальный редактор стрим-оверлея для OBS</title>
-<meta name="description" content="Стрим-оверлей и визуальный редактор раскладки на Electron: алерты, чат, цель доната, сцены и 3D-виджеты. Отдаётся в OBS как Browser Source.">
+<meta name="description" content="Стрим-оверлей и визуальный редактор раскладки на Tauri 2 (Rust): алерты, чат, цель доната, сцены и 3D-виджеты. Отдаётся в OBS как Browser Source.">
 <link rel="canonical" href="https://ose-overlay.ru/">
 <link rel="alternate" hreflang="ru" href="https://ose-overlay.ru/">
 <link rel="alternate" hreflang="en" href="https://ose-overlay.ru/en/">
@@ -53,7 +53,7 @@
   "operatingSystem": "Windows, Linux, macOS",
   "softwareVersion": "3.2.1",
   "author": { "@type": "Person", "name": "Halantar" },
-  "description": "Стрим-оверлей в стиле Material Design 3 и визуальный редактор раскладки на Electron: алерты, чат, цель доната, сцены, темы и 3D-виджеты.",
+  "description": "Стрим-оверлей в стиле Material Design 3 и визуальный редактор раскладки на Tauri 2 (Rust): алерты, чат, цель доната, сцены, темы и 3D-виджеты.",
   "license": "https://github.com/Halantar-git/open-stream-environment/blob/HEAD/LICENSE",
   "softwareRequirements": "Windows 10+, Linux, macOS (Apple Silicon)",
   "downloadUrl": "https://github.com/Halantar-git/open-stream-environment/releases/latest",
@@ -102,7 +102,7 @@
       <div class="hero-copy">
         <p class="badge">Версия <span data-release-version>3.2.1</span> · сборка от <span data-release-date>16 сентября 2026</span></p>
         <h1>Стрим-оверлей для OBS, который собирается мышью</h1>
-        <p class="lead">Open Stream Environment — приложение на Electron: визуальный редактор раскладки в стиле drag-and-drop, локальный сервер и страница оверлея, которую вы добавляете в OBS как Browser Source. Алерты, чат, цель доната, сцены, темы и 3D-виджеты настраиваются в одном окне — данные и токены остаются на вашем компьютере.</p>
+        <p class="lead">Open Stream Environment — приложение на Tauri 2 (Rust) с системным webview: визуальный редактор раскладки в стиле drag-and-drop, локальный сервер и страница оверлея, которую вы добавляете в OBS как Browser Source. Алерты, чат, цель доната, сцены, темы и 3D-виджеты настраиваются в одном окне — данные и токены остаются на вашем компьютере.</p>
 
         <div class="cta-row">
           <a class="btn btn-primary btn-lg" href="#download">Скачать</a>
@@ -169,7 +169,7 @@
         <article class="card">
           <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 4.5 6.8v5.4c0 4 3.1 7.2 7.5 8.3 4.4-1.1 7.5-4.3 7.5-8.3V6.8L12 3.5Z"/><path d="M9.3 12.2l2 2 3.5-4"/></svg></div>
           <h3>Локально и приватно</h3>
-          <p>Сервер Express и WebSocket работает на вашей машине, наружу ничего не уходит. Токены Twitch, DonationAlerts и YouTube шифруются системным хранилищем ОС, настройки пишутся атомарно и с бэкапами.</p>
+          <p>Сервер на Rust (tokio + axum) работает на вашей машине, наружу ничего не уходит. Токены Twitch, DonationAlerts и YouTube шифруются системным хранилищем ОС, настройки пишутся атомарно и с бэкапами.</p>
         </article>
 
         <article class="card">
@@ -264,7 +264,7 @@
         <li>
           <span class="step-num">1</span>
           <h3>Установите</h3>
-          <p>Нужен Node.js 22.12+. Выполните <code>npm install</code>, затем <code>npm start</code> — откроется окно панели управления.</p>
+          <p>Нужен Rust (stable) и Node.js 22.12+ для тестов. Выполните <code>npm install</code>, затем <code>npm run tauri:dev</code> — откроется окно панели управления.</p>
         </li>
         <li>
           <span class="step-num">2</span>
@@ -290,7 +290,7 @@
       <div class="faq">
         <details>
           <summary>Что нужно, чтобы запустить?</summary>
-          <p>Из исходников — Node.js 22.12+: <code>npm install</code>, затем <code>npm start</code>. Для обычного использования возьмите готовую сборку: установщик для Windows x64, AppImage и deb для Linux x64, dmg для macOS на Apple Silicon. Готового файла под Intel-мак нет.</p>
+          <p>Из исходников — Rust (stable): <code>npm install</code>, затем <code>npm run tauri:dev</code> (Node.js 22.12+ нужен только для тестов и скриптов данных). Для обычного использования возьмите готовую сборку: для Windows x64 — установщик NSIS <code>.exe</code> и MSI, для Linux x64 — AppImage, deb и rpm, для macOS — dmg на Apple Silicon. Готового файла под Intel-мак нет.</p>
         </details>
         <details>
           <summary>Как добавить оверлей в OBS?</summary>
@@ -302,7 +302,7 @@
         </details>
         <details>
           <summary>Где хранятся настройки и история?</summary>
-          <p>Только на вашем компьютере: <code>config.json</code> и <code>local-db.json</code> в каталоге данных (в Windows — <code>%APPDATA%\Open Stream Environment</code>). История событий и чата — в append-only <code>local-db.jsonl</code> и <code>local-db.chat.jsonl</code>. Рядом ведутся бэкапы <code>.bak.0…2</code>, а битый файл уезжает в карантин и поднимается из копии.</p>
+          <p>Только на вашем компьютере: <code>config.json</code> и <code>local-db.json</code> в каталоге данных (в Windows — <code>%APPDATA%\com.openstreamenvironment.app</code>, либо рядом с exe в портативном режиме). История событий и чата — в append-only <code>local-db.jsonl</code> и <code>local-db.chat.jsonl</code>. Рядом ведутся бэкапы <code>.bak.0…2</code>, а битый файл уезжает в карантин и поднимается из копии.</p>
         </details>
         <details>
           <summary>Донаты не приходят — где смотреть?</summary>
@@ -333,7 +333,7 @@
     <div class="wrap">
       <div class="cta-panel">
         <h2>Скачать Open Stream Environment</h2>
-        <p>Версия <span data-release-version>3.2.1</span> (<span data-release-date>16 сентября 2026</span>). Установщик для Windows x64, AppImage и deb для Linux x64, dmg для macOS (Apple Silicon). Бесплатно, под лицензией GPL.</p>
+        <p>Версия <span data-release-version>3.2.1</span> (<span data-release-date>16 сентября 2026</span>). Установщик (NSIS и MSI) для Windows x64, AppImage, deb и rpm для Linux x64, dmg для macOS (Apple Silicon). Бесплатно, под лицензией GPL.</p>
 
         <!-- Прямые ссылки на файлы релиза: адреса подставляет деплой, а main.js
              выделяет кнопку системы посетителя -->

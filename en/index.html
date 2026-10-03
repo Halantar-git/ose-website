@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Open Stream Environment — a visual stream overlay editor for OBS</title>
-<meta name="description" content="A stream overlay and a visual layout editor on Electron: alerts, chat, donation goal, scenes and 3D widgets. Served to OBS as a Browser Source.">
+<meta name="description" content="A stream overlay and a visual layout editor on Tauri 2 (Rust): alerts, chat, donation goal, scenes and 3D widgets. Served to OBS as a Browser Source.">
 <link rel="canonical" href="https://ose-overlay.ru/en/">
 <link rel="alternate" hreflang="ru" href="https://ose-overlay.ru/">
 <link rel="alternate" hreflang="en" href="https://ose-overlay.ru/en/">
@@ -54,7 +54,7 @@
   "operatingSystem": "Windows, Linux, macOS",
   "softwareVersion": "3.2.1",
   "author": { "@type": "Person", "name": "Halantar" },
-  "description": "A stream overlay in the style of Material Design 3 and a visual layout editor on Electron: alerts, chat, donation goal, scenes, themes and 3D widgets.",
+  "description": "A stream overlay in the style of Material Design 3 and a visual layout editor on Tauri 2 (Rust): alerts, chat, donation goal, scenes, themes and 3D widgets.",
   "license": "https://github.com/Halantar-git/open-stream-environment/blob/HEAD/LICENSE",
   "softwareRequirements": "Windows 10+, Linux, macOS (Apple Silicon)",
   "downloadUrl": "https://github.com/Halantar-git/open-stream-environment/releases/latest",
@@ -104,7 +104,7 @@
       <div class="hero-copy">
         <p class="badge">Version <span data-release-version>3.2.1</span> · released <span data-release-date>September 16, 2026</span></p>
         <h1>A stream overlay for OBS that you build with the mouse</h1>
-        <p class="lead">Open Stream Environment is an Electron app: a drag-and-drop layout editor, a local server and an overlay page you add to OBS as a Browser Source. Alerts, chat, the donation goal, scenes, themes and 3D widgets are set up in one window — and your data and tokens stay on your computer.</p>
+        <p class="lead">Open Stream Environment is a Tauri 2 (Rust) app with a system webview: a drag-and-drop layout editor, a local server and an overlay page you add to OBS as a Browser Source. Alerts, chat, the donation goal, scenes, themes and 3D widgets are set up in one window — and your data and tokens stay on your computer.</p>
 
         <div class="cta-row">
           <a class="btn btn-primary btn-lg" href="#download">Download</a>
@@ -171,7 +171,7 @@
         <article class="card">
           <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 4.5 6.8v5.4c0 4 3.1 7.2 7.5 8.3 4.4-1.1 7.5-4.3 7.5-8.3V6.8L12 3.5Z"/><path d="M9.3 12.2l2 2 3.5-4"/></svg></div>
           <h3>Local and private</h3>
-          <p>The Express and WebSocket server runs on your own machine and nothing goes out. Twitch, DonationAlerts and YouTube tokens are encrypted by the OS credential store, and settings are written atomically with backups.</p>
+          <p>The Rust server (tokio + axum) runs on your own machine and nothing goes out. Twitch, DonationAlerts and YouTube tokens are encrypted by the OS credential store, and settings are written atomically with backups.</p>
         </article>
 
         <article class="card">
@@ -266,7 +266,7 @@
         <li>
           <span class="step-num">1</span>
           <h3>Install</h3>
-          <p>Node.js 22.12+ is required. Run <code>npm install</code>, then <code>npm start</code> — the control panel window opens.</p>
+          <p>Rust (stable) is required, plus Node.js 22.12+ for the tests. Run <code>npm install</code>, then <code>npm run tauri:dev</code> — the control panel window opens.</p>
         </li>
         <li>
           <span class="step-num">2</span>
@@ -292,7 +292,7 @@
       <div class="faq">
         <details>
           <summary>What do I need to run it?</summary>
-          <p>From source you need Node.js 22.12+: <code>npm install</code>, then <code>npm start</code>. For everyday use grab a ready build: a Windows x64 installer, AppImage and deb for Linux x64, a dmg for macOS on Apple Silicon. There is no prebuilt file for Intel Macs.</p>
+          <p>From source you need Rust (stable): <code>npm install</code>, then <code>npm run tauri:dev</code> (Node.js 22.12+ is only for the tests and data scripts). For everyday use grab a ready build: for Windows x64 an NSIS <code>.exe</code> installer and an MSI, for Linux x64 AppImage, deb and rpm, for macOS a dmg on Apple Silicon. There is no prebuilt file for Intel Macs.</p>
         </details>
         <details>
           <summary>How do I add the overlay to OBS?</summary>
@@ -304,7 +304,7 @@
         </details>
         <details>
           <summary>Where are the settings and the history stored?</summary>
-          <p>On your computer only: <code>config.json</code> and <code>local-db.json</code> in the data directory (on Windows, <code>%APPDATA%\Open Stream Environment</code>). Event and chat history live in the append-only <code>local-db.jsonl</code> and <code>local-db.chat.jsonl</code>. Backups <code>.bak.0…2</code> are kept next to them, and a corrupt file goes to quarantine and is restored from a copy.</p>
+          <p>On your computer only: <code>config.json</code> and <code>local-db.json</code> in the data directory (on Windows, <code>%APPDATA%\com.openstreamenvironment.app</code>). Event and chat history live in the append-only <code>local-db.jsonl</code> and <code>local-db.chat.jsonl</code>. Backups <code>.bak.0…2</code> are kept next to them, and a corrupt file goes to quarantine and is restored from a copy.</p>
         </details>
         <details>
           <summary>Donations are not arriving — where do I look?</summary>
@@ -335,7 +335,7 @@
     <div class="wrap">
       <div class="cta-panel">
         <h2>Download Open Stream Environment</h2>
-        <p>Version <span data-release-version>3.2.1</span> (<span data-release-date>September 16, 2026</span>). A Windows x64 installer, AppImage and deb for Linux x64, a dmg for macOS (Apple Silicon). Free, under the GPL license.</p>
+        <p>Version <span data-release-version>3.2.1</span> (<span data-release-date>September 16, 2026</span>). An NSIS and MSI installer for Windows x64, AppImage, deb and rpm for Linux x64, a dmg for macOS (Apple Silicon). Free, under the GPL license.</p>
 
         <!-- Прямые ссылки на файлы релиза: адреса подставляет деплой, а main.js
              выделяет кнопку системы посетителя -->
