@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Privacy policy — Open Stream Environment</title>
-<meta name="description" content="What the ose-overlay.ru site and the Open Stream Environment app do with your data: the site collects nothing, the app keeps everything local and sends no data to the developer.">
+<meta name="description" content="What the ose-overlay.ru site and the Open Stream Environment app do with your data: the site collects nothing, the app keeps everything local and sends no data to the developer; what leaves goes only to the services you connect and to guest cameras.">
 <link rel="canonical" href="https://ose-overlay.ru/en/privacy.html">
 <link rel="alternate" hreflang="ru" href="https://ose-overlay.ru/privacy.html">
 <link rel="alternate" hreflang="en" href="https://ose-overlay.ru/en/privacy.html">
@@ -29,7 +29,8 @@
     <p class="badge">Privacy policy</p>
     <h1>What happens to your data</h1>
     <p class="lead">In short: this site collects nothing, and the app keeps all data on your computer
-      only and sends none of it anywhere — except to the services you connect yourself.</p>
+      only and sends none of it anywhere — except to the services you connect yourself and to guest
+      cameras, if you enable them.</p>
 
     <h2>This site</h2>
     <p>The page is static: no analytics, no counters, no ads, no cookies. The only thing stored in your
@@ -57,8 +58,14 @@
         developer, neither at startup nor while it runs. You can check what goes out in the app log
         and in the support report.</li>
       <li>The only requests that go out are to the services you have connected: Twitch,
-        DonationAlerts, YouTube and OBS WebSocket. These are your tokens and your services, so their
-        privacy policies apply to that data.</li>
+        DonationAlerts, YouTube and OBS WebSocket, plus a signaling service for guest cameras. These
+        are your services or an address you entered yourself, so their policies apply to that data.</li>
+      <li>Guest cameras: the host creates a one-time link and the guest pastes it into OSE. Over the
+        internet a signaling service introduces the two sides (a public Worker by default, and you
+        can point the setting at your own): it forwards only SDP/ICE and never sees the media. Video
+        and audio travel directly over WebRTC — the peer sees your IP, as with any direct connection.
+        If you configure your own TURN, the media goes through it. The guest gets only their own video
+        channel: panel commands, the layout and chat are not available to them.</li>
       <li>The app's local server listens on a port and is reachable on the local network, but it can
         only be controlled with an access code: other devices on the same network cannot switch
         scenes. You can change the code in "Settings → Network access", and the old one then stops
@@ -71,15 +78,17 @@
 
     <h2>Third parties</h2>
     <p>The app connects directly to the services you have set up: Twitch, DonationAlerts, YouTube and
-      OBS. There is no intermediary between you and them, so their own policies apply to what goes
-      there. The app's developer has no access to it.</p>
+      OBS. For guest cameras over the internet a signaling service is added — a public Worker by
+      default, which can be replaced with your own; it sees only SDP/ICE, not the media. The guest's
+      video and audio go directly between the machines or through your TURN. The app's developer has
+      access to none of these channels.</p>
 
     <h2>Questions</h2>
     <p>If something on this page disagrees with what the program does, that is a bug and it is worth
       fixing: write to the repository
       <a href="https://github.com/Halantar-git/open-stream-environment/issues">issues</a>. The app is
       distributed under the GPL license, and the source code is open and available for review.</p>
-    <p>Last updated: September 18, 2026.</p>
+    <p>Last updated: October 30, 2026.</p>
 
     <div class="cta-row">
       <a class="btn btn-primary btn-lg" href="../">Back to the home page</a>

@@ -6,7 +6,8 @@
     python tools/convert-shots.py [папка_со_скриншотами]
 
 Папка по умолчанию — `../OSE_pic` рядом с репозиторием сайта. Результат кладётся
-в `assets/img` под именами, которые уже прописаны в разметке обеих языковых версий.
+в `assets/img/ru` и `assets/img/en` под именами, которые уже прописаны в разметке
+соответствующей языковой версии.
 
 Зависимость — только Pillow (`pip install Pillow`), и только для этого инструмента:
 `check-site.py` обходится стандартной библиотекой.
@@ -15,9 +16,10 @@
 
 * Размер картинки не меняется: по нему выставлены `width`/`height` в разметке
   (их сверяет `check-site.py`), а лайтбокс показывает снимок крупно.
-* Кадры интерфейса сохраняются без потерь — текст и тонкие линии остаются резкими.
-* «Игровые» кадры с фотографическим содержимым идут в качестве 90: без потерь они
-  весят 1.4–1.7 МБ против 200–300 КБ без видимой разницы.
+* Кадры панели управления сохраняются без потерь — текст и тонкие линии остаются
+  резкими.
+* Оверлеи идут в качестве 90: на чёрном фоне разница не видна, а без потерь
+  кадр весит в несколько раз больше.
 
 После конвертации:
 
@@ -31,30 +33,26 @@ import time
 
 from PIL import Image
 
-# PNG в папке скриншотов -> имя, которое ждёт разметка.
-# Не конвертируются снимки, убранные из галереи: `OSE_wheel_new.png` (Колесо Фортуны),
-# `remote1.png` и `remote2.png` (их заменил один `remote_full.png`), `poll.png`
-# (та же сцена голосования, что в `poll2.png`, только с другим типом диаграммы).
-PAIRS = [
-    ('main.png', 'main.webp'),                  # hero: редактор раскладки
-    # галерея #screens — в том же порядке, что на странице
-    ('ED_3.png', 'ed-3.webp'),
-    ('stream_sc.png', 'stream-sc.webp'),
-    ('poll2.png', 'poll2.webp'),
-    ('scene.png', 'scene.webp'),
-    ('term.png', 'term.webp'),
-    ('history.png', 'history.webp'),
-    ('wheel_cfg.png', 'wheel-cfg.webp'),
-    ('HUD_mode.png', 'hud-mode.webp'),
-    ('remote_full.png', 'remote-full.webp'),    # пульт целиком: заменяет remote1 и remote2
-]
+# Снимок панели: без потерь, интерфейсный текст.
+PANEL = ['editor', 'themes', 'guests', 'integrations', 'scenes', 'terminal', 'help']
 
-# Выше этого размера сохранять без потерь уже невыгодно
-LOSSLESS_LIMIT = 400 * 1024
+# Оверлей в теме: качество 90, подложка — чёрная сцена.
+THEMES = ['nebula', 'orbital', 'elite', 'pixel', 'nuclear', 'teso', 'wardogs', 'retrowave']
+
+LANGS = ['ru', 'en']
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DST = os.path.join(REPO, 'assets', 'img')
 DEFAULT_SRC = os.path.join(os.path.dirname(REPO), 'OSE_pic')
+
+
+def pairs():
+    """PNG в папке скриншотов -> путь, который ждёт разметка."""
+    for lang in LANGS:
+        for name in PANEL:
+            yield f'panel-{lang}-{name}.png', os.path.join(lang, f'{name}.webp'), 'lossless'
+        for theme in THEMES:
+            yield f'overlay-{lang}-{theme}.png', os.path.join(lang, f'overlay-{theme}.webp'), 'q90'
 
 
 def encoded_size(img, **kwargs):
@@ -79,9 +77,10 @@ def save(img, dst, **kwargs):
 def convert(src_dir):
     missing = []
     total = 0
+    os.makedirs(DST, exist_ok=True)
 
-    print(f'{"файл":<16}{"размер":<12}{"режим":<10}{"вес":>8}')
-    for src_name, dst_name in PAIRS:
+    print(f'{"файл":<28}{"размер":<12}{"режим":<10}{"вес":>8}')
+    for src_name, dst_name, mode in pairs():
         src = os.path.join(src_dir, src_name)
         if not os.path.exists(src):
             missing.append(src_name)
@@ -90,17 +89,16 @@ def convert(src_dir):
         img = Image.open(src).convert('RGB')
         width, height = img.size
         dst = os.path.join(DST, dst_name)
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
 
-        if encoded_size(img, lossless=True) <= LOSSLESS_LIMIT:
+        if mode == 'lossless':
             save(img, dst, lossless=True)
-            mode = 'lossless'
         else:
             save(img, dst, quality=90)
-            mode = 'q90'
 
         size = os.path.getsize(dst)
         total += size
-        print(f'{dst_name:<16}{width}x{height:<7}{mode:<10}{size / 1024:>6.0f} КБ')
+        print(f'{dst_name:<28}{width}x{height:<7}{mode:<10}{size / 1024:>6.0f} КБ')
 
     print(f'итого: {total / 1024:.0f} КБ в {DST}')
     if missing:

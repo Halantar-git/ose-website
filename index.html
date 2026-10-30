@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Open Stream Environment — визуальный редактор стрим-оверлея для OBS</title>
-<meta name="description" content="Стрим-оверлей и визуальный редактор раскладки на Tauri 2 (Rust): алерты, чат, цель доната, сцены и 3D-виджеты. Отдаётся в OBS как Browser Source.">
+<meta name="description" content="Стрим-оверлей и визуальный редактор раскладки на Tauri 2 (Rust): алерты, чат, цель доната, сцены, 3D-виджеты и гостевые камеры. Отдаётся в OBS как Browser Source.">
 <link rel="canonical" href="https://ose-overlay.ru/">
 <link rel="alternate" hreflang="ru" href="https://ose-overlay.ru/">
 <link rel="alternate" hreflang="en" href="https://ose-overlay.ru/en/">
@@ -21,7 +21,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Open Stream Environment">
 <meta property="og:title" content="Open Stream Environment — визуальный редактор стрим-оверлея для OBS">
-<meta property="og:description" content="Стрим-оверлей в стиле Material Design 3 и редактор раскладки в стиле drag-and-drop. Отдаётся в OBS как Browser Source.">
+<meta property="og:description" content="Стрим-оверлей в стиле Material Design 3, редактор раскладки drag-and-drop, гостевые камеры и 3D-виджеты. Отдаётся в OBS как Browser Source.">
 <meta property="og:url" content="https://ose-overlay.ru/">
 <meta property="og:image" content="https://ose-overlay.ru/assets/img/og.png">
 <meta property="og:image:width" content="1200">
@@ -53,7 +53,7 @@
   "operatingSystem": "Windows, Linux, macOS",
   "softwareVersion": "3.2.1",
   "author": { "@type": "Person", "name": "Halantar" },
-  "description": "Стрим-оверлей в стиле Material Design 3 и визуальный редактор раскладки на Tauri 2 (Rust): алерты, чат, цель доната, сцены, темы и 3D-виджеты.",
+  "description": "Стрим-оверлей в стиле Material Design 3 и визуальный редактор раскладки на Tauri 2 (Rust): алерты, чат, цель доната, сцены, темы, 3D-виджеты и гостевые камеры.",
   "license": "https://github.com/Halantar-git/open-stream-environment/blob/HEAD/LICENSE",
   "softwareRequirements": "Windows 10+, Linux, macOS (Apple Silicon)",
   "downloadUrl": "https://github.com/Halantar-git/open-stream-environment/releases/latest",
@@ -119,8 +119,8 @@
       <!-- Визуал в hero: главный экран редактора -->
       <div class="hero-visual">
         <div class="mock">
-          <a class="shot-link" href="assets/img/main.webp" data-zoom>
-            <img src="assets/img/main.webp" alt="Редактор раскладки: канвас 16:9 с превью оверлея, библиотека виджетов слева, слои и свойства справа" width="1920" height="1032" fetchpriority="high">
+          <a class="shot-link" href="assets/img/ru/editor.webp" data-zoom>
+            <img src="assets/img/ru/editor.webp" alt="Редактор раскладки: канвас 16:9 с превью оверлея в теме Retrowave, библиотека виджетов слева, слои и свойства справа" width="1920" height="1080" fetchpriority="high">
           </a>
         </div>
       </div>
@@ -155,9 +155,15 @@
         </article>
 
         <article class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="12" height="10" rx="2"/><path d="M15 10.5 20 8v8l-5-2.5"/></svg></div>
+          <h3>Гостевые камеры</h3>
+          <p>До четырёх дополнительных камер с других компьютеров: одноразовая ссылка, ваше подтверждение, видео и звук напрямую по WebRTC. В локальной сети — без посредников, через интернет — signaling-сервис; кадры привязаны к слотам, а сцена «Гости» уже собрана сеткой два на два.</p>
+        </article>
+
+        <article class="card">
           <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 1 0 0 17c1.7 0 2.4-.9 2.4-1.8 0-1.6-1.3-1.9-1.3-2.8 0-.8.7-1.4 1.6-1.4h1.8a4.5 4.5 0 0 0 4.5-4.5c0-3.6-3.9-6.5-9-6.5Z"/><circle cx="8.3" cy="10.2" r="1"/><circle cx="12" cy="7.8" r="1"/><circle cx="15.8" cy="10.2" r="1"/></svg></div>
           <h3>Темы, включая 3D</h3>
-          <p>Material You, Orbital, Pixel Perfect, Elite и Nuclear, у части — неоновые 3D-виджеты. Своя тема собирается в отдельном редакторе: палитра, формы панелей, шрифты, свечение и проверка контраста по WCAG.</p>
+          <p>Material You, Orbital (Star Citizen Grim HEX), Pixel Perfect, Elite и Cobra Mk II, Nuclear, TESO, Wardogs, Retrowave и Super Four, у большинства — 3D-виджеты. Своя тема собирается в отдельном редакторе: палитра, формы панелей, шрифты, свечение и проверка контраста по WCAG.</p>
         </article>
 
         <article class="card">
@@ -169,7 +175,7 @@
         <article class="card">
           <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 4.5 6.8v5.4c0 4 3.1 7.2 7.5 8.3 4.4-1.1 7.5-4.3 7.5-8.3V6.8L12 3.5Z"/><path d="M9.3 12.2l2 2 3.5-4"/></svg></div>
           <h3>Локально и приватно</h3>
-          <p>Сервер на Rust (tokio + axum) работает на вашей машине, наружу ничего не уходит. Токены Twitch, DonationAlerts и YouTube шифруются системным хранилищем ОС, настройки пишутся атомарно и с бэкапами.</p>
+          <p>Сервер на Rust (tokio + axum) работает на вашей машине: настройки, история и токены остаются локально. Наружу уходят только запросы к Twitch, DonationAlerts и YouTube, а если включить гостевые камеры — signaling и медиа по WebRTC (прямое P2P раскрывает собеседнику IP). Токены шифруются системным хранилищем ОС, настройки пишутся атомарно и с бэкапами.</p>
         </article>
 
         <article class="card">
@@ -200,6 +206,7 @@
           <li class="chip">Последние события</li>
           <li class="chip">Счётчик</li>
           <li class="chip">Соц. баннер</li>
+          <li class="chip">Гостевая камера</li>
           <li class="chip">Таймер Executive Hangar</li>
           <li class="chip">Визуализатор микрофона</li>
           <li class="chip">Колесо Фортуны</li>
@@ -216,37 +223,52 @@
     <div class="wrap">
       <header class="section-head">
         <h2>Скриншоты</h2>
-        <p class="section-sub">Редактор, настройки, сцены и 3D-виджеты.</p>
+        <p class="section-sub">Оверлеи в разных темах, редактор, сцены, гостевые камеры и настройки.</p>
       </header>
 
-      <!-- Скриншоты сконвертированы в WebP из папки OSE_pic; alt-тексты выверены по описанию автора -->
+      <!-- Снимки сняты из приложения: оверлей на чёрном фоне и окно панели, отдельно для каждого языка -->
       <div class="shots">
-        <a class="shot" href="assets/img/ed-3.webp" data-zoom>
-          <img src="assets/img/ed-3.webp" alt="Оверлей в теме Elite" loading="lazy" width="1919" height="1079">
+        <a class="shot" href="assets/img/ru/overlay-retrowave.webp" data-zoom>
+          <img src="assets/img/ru/overlay-retrowave.webp" alt="Оверлей в теме Retrowave: цель сбора, карточка доната, последние события, чат и бегущая строка" loading="lazy" width="1920" height="1080">
         </a>
-        <a class="shot" href="assets/img/stream-sc.webp" data-zoom>
-          <img src="assets/img/stream-sc.webp" alt="Оверлей в теме Orbital" loading="lazy" width="1919" height="1079">
+        <a class="shot" href="assets/img/ru/overlay-orbital.webp" data-zoom></a>
+          <img src="assets/img/ru/overlay-orbital.webp" alt="Оверлей в теме Orbital с 3D-виджетами Grim HEX" loading="lazy" width="1920" height="1080">
         </a>
-        <a class="shot" href="assets/img/poll2.webp" data-zoom>
-          <img src="assets/img/poll2.webp" alt="Сцена голосования: живая диаграмма" loading="lazy" width="1920" height="1032">
+        <a class="shot" href="assets/img/ru/overlay-elite.webp" data-zoom>
+          <img src="assets/img/ru/overlay-elite.webp" alt="Оверлей в теме Elite с 3D-виджетами Cobra Mk II" loading="lazy" width="1920" height="1080">
         </a>
-        <a class="shot" href="assets/img/scene.webp" data-zoom>
-          <img src="assets/img/scene.webp" alt="Вкладка «Сцены» в панели управления" loading="lazy" width="1920" height="1032">
+        <a class="shot" href="assets/img/ru/overlay-nuclear.webp" data-zoom>
+          <img src="assets/img/ru/overlay-nuclear.webp" alt="Оверлей в теме Nuclear" loading="lazy" width="1920" height="1080">
         </a>
-        <a class="shot" href="assets/img/term.webp" data-zoom>
-          <img src="assets/img/term.webp" alt="Терминал логов в панели управления" loading="lazy" width="1920" height="1032">
+        <a class="shot" href="assets/img/ru/overlay-teso.webp" data-zoom>
+          <img src="assets/img/ru/overlay-teso.webp" alt="Оверлей в теме TESO" loading="lazy" width="1920" height="1080">
         </a>
-        <a class="shot" href="assets/img/history.webp" data-zoom>
-          <img src="assets/img/history.webp" alt="Окно истории: события, сессии и чат стрима" loading="lazy" width="1920" height="1032">
+        <a class="shot" href="assets/img/ru/overlay-pixel.webp" data-zoom>
+          <img src="assets/img/ru/overlay-pixel.webp" alt="Оверлей в теме Pixel Perfect" loading="lazy" width="1920" height="1080">
         </a>
-        <a class="shot" href="assets/img/wheel-cfg.webp" data-zoom>
-          <img src="assets/img/wheel-cfg.webp" alt="Открытая панель «Колесо»: настройки розыгрыша" loading="lazy" width="1920" height="1032">
+        <a class="shot" href="assets/img/ru/overlay-wardogs.webp" data-zoom></a>
+          <img src="assets/img/ru/overlay-wardogs.webp" alt="Оверлей в теме Wardogs" loading="lazy" width="1920" height="1080">
         </a>
-        <a class="shot" href="assets/img/hud-mode.webp" data-zoom>
-          <img src="assets/img/hud-mode.webp" alt="Режим редактирования виджетов поверх игры" loading="lazy" width="1919" height="1079">
+        <a class="shot" href="assets/img/ru/overlay-nebula.webp" data-zoom></a>
+          <img src="assets/img/ru/overlay-nebula.webp" alt="Оверлей в теме Material You" loading="lazy" width="1920" height="1080">
         </a>
-        <a class="shot" href="assets/img/remote-full.webp" data-zoom>
-          <img src="assets/img/remote-full.webp" alt="Пульт Web Remote, открытый на мониторе" loading="lazy" width="1919" height="1079">
+        <a class="shot" href="assets/img/ru/themes.webp" data-zoom>
+          <img src="assets/img/ru/themes.webp" alt="Настройки, раздел «Оформление»: сетка тем и переключатели 3D-виджетов" loading="lazy" width="1920" height="1080">
+        </a>
+        <a class="shot" href="assets/img/ru/guests.webp" data-zoom>
+          <img src="assets/img/ru/guests.webp" alt="Гостевые камеры: способ приглашения, адрес signaling, STUN и TURN, слоты камер" loading="lazy" width="1920" height="1080">
+        </a>
+        <a class="shot" href="assets/img/ru/scenes.webp" data-zoom>
+          <img src="assets/img/ru/scenes.webp" alt="Вкладка «Сцены»: список сцен, превью «Начало стрима» и его настройки" loading="lazy" width="1920" height="1080">
+        </a>
+        <a class="shot" href="assets/img/ru/integrations.webp" data-zoom>
+          <img src="assets/img/ru/integrations.webp" alt="Настройки Twitch: канал, приложение, награды канала и чат-бот" loading="lazy" width="1920" height="1080">
+        </a>
+        <a class="shot" href="assets/img/ru/terminal.webp" data-zoom>
+          <img src="assets/img/ru/terminal.webp" alt="Терминал панели: вывод команд status, themes и help" loading="lazy" width="1920" height="1080">
+        </a>
+        <a class="shot" href="assets/img/ru/help.webp" data-zoom>
+          <img src="assets/img/ru/help.webp" alt="Справка по разделам: о приложении, быстрый старт, редактор" loading="lazy" width="1920" height="1080">
         </a>
       </div>
     </div>
@@ -297,6 +319,10 @@
           <p>Оверлей — обычная веб-страница, поэтому в OBS это Browser Source: адрес <code>http://localhost:8710/overlay/overlay.html</code>, разрешение 1920×1080, FPS источника 30. Включите «Завершать работу источника, когда он не отображается» — тогда скрытые сцены полностью засыпают.</p>
         </details>
         <details>
+          <summary>Как подключить гостя в мультикам?</summary>
+          <p>В «Настройки → Гостевые камеры» создайте приглашение для слота и отправьте ссылку гостю — он вставит её в OSE, а вы нажмёте «Пустить». В локальной сети соединение прямое; через интернет нужен signaling-сервис, но медиа всё равно идёт напрямую. Если у кого-то симметричный NAT или CGNAT (мобильный интернет), прямой путь не соберётся: поля TURN в настройках есть, но своего ретранслятора в поставке нет — нужен свой сервер, например coturn. VPN тоже мешает: его выход обычно даёт симметричный NAT.</p>
+        </details>
+        <details>
           <summary>Нужны ли аккаунты Twitch и DonationAlerts?</summary>
           <p>Чат читается анонимно — достаточно имени канала. Алерты о фоллоу, подписках, чирах и донатах требуют своих приложений: Client ID и Client Secret с dev.twitch.tv и donationalerts.com плюс авторизация. Отправка сообщений в чат тоже требует подключённого Twitch.</p>
         </details>
@@ -314,7 +340,7 @@
         </details>
         <details>
           <summary>Сколько стоит приложение?</summary>
-          <p>Бесплатно. Проект открытый и распространяется под лицензией GPL — код, сборки и история изменений лежат в <a href="https://github.com/Halantar-git/open-stream-environment">репозитории на GitHub</a>.</p>
+          <p>Бесплатно. Проект открытый, под лицензией GPL, и использует только открытые и бесплатные ресурсы — код, сборки и история изменений лежат в <a href="https://github.com/Halantar-git/open-stream-environment">репозитории на GitHub</a>.</p>
         </details>
         <details>
           <summary>Как сообщить об ошибке?</summary>

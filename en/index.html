@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Open Stream Environment — a visual stream overlay editor for OBS</title>
-<meta name="description" content="A stream overlay and a visual layout editor on Tauri 2 (Rust): alerts, chat, donation goal, scenes and 3D widgets. Served to OBS as a Browser Source.">
+<meta name="description" content="A stream overlay and a visual layout editor on Tauri 2 (Rust): alerts, chat, donation goal, scenes, 3D widgets and guest cameras. Served to OBS as a Browser Source.">
 <link rel="canonical" href="https://ose-overlay.ru/en/">
 <link rel="alternate" hreflang="ru" href="https://ose-overlay.ru/">
 <link rel="alternate" hreflang="en" href="https://ose-overlay.ru/en/">
@@ -21,7 +21,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Open Stream Environment">
 <meta property="og:title" content="Open Stream Environment — a visual stream overlay editor for OBS">
-<meta property="og:description" content="A stream overlay in the style of Material Design 3 and a drag-and-drop layout editor. Served to OBS as a Browser Source.">
+<meta property="og:description" content="A stream overlay in the style of Material Design 3, a drag-and-drop layout editor, guest cameras and 3D widgets. Served to OBS as a Browser Source.">
 <meta property="og:url" content="https://ose-overlay.ru/en/">
 <meta property="og:image" content="https://ose-overlay.ru/assets/img/og.png">
 <meta property="og:image:width" content="1200">
@@ -54,7 +54,7 @@
   "operatingSystem": "Windows, Linux, macOS",
   "softwareVersion": "3.2.1",
   "author": { "@type": "Person", "name": "Halantar" },
-  "description": "A stream overlay in the style of Material Design 3 and a visual layout editor on Tauri 2 (Rust): alerts, chat, donation goal, scenes, themes and 3D widgets.",
+  "description": "A stream overlay in the style of Material Design 3 and a visual layout editor on Tauri 2 (Rust): alerts, chat, donation goal, scenes, themes, 3D widgets and guest cameras.",
   "license": "https://github.com/Halantar-git/open-stream-environment/blob/HEAD/LICENSE",
   "softwareRequirements": "Windows 10+, Linux, macOS (Apple Silicon)",
   "downloadUrl": "https://github.com/Halantar-git/open-stream-environment/releases/latest",
@@ -121,8 +121,8 @@
       <!-- Визуал в hero: главный экран редактора -->
       <div class="hero-visual">
         <div class="mock">
-          <a class="shot-link" href="../assets/img/main.webp" data-zoom>
-            <img src="../assets/img/main.webp" alt="Layout editor: a 16:9 canvas with the overlay preview, the widget library on the left, layers and properties on the right" width="1920" height="1032" fetchpriority="high">
+          <a class="shot-link" href="../assets/img/en/editor.webp" data-zoom>
+            <img src="../assets/img/en/editor.webp" alt="Layout editor: a 16:9 canvas with the overlay preview in the Retrowave theme, the widget library on the left, layers and properties on the right" width="1920" height="1080" fetchpriority="high">
           </a>
         </div>
       </div>
@@ -157,9 +157,15 @@
         </article>
 
         <article class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="12" height="10" rx="2"/><path d="M15 10.5 20 8v8l-5-2.5"/></svg></div>
+          <h3>Guest cameras</h3>
+          <p>Up to four extra cameras from other computers: a one-time invite link, your confirmation, and video with audio straight over WebRTC. On a LAN there is no middleman; over the internet a signaling service introduces the two sides while the media still goes directly. Frames are bound to slots, and the Guests scene ships as a ready two-by-two grid.</p>
+        </article>
+
+        <article class="card">
           <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 1 0 0 17c1.7 0 2.4-.9 2.4-1.8 0-1.6-1.3-1.9-1.3-2.8 0-.8.7-1.4 1.6-1.4h1.8a4.5 4.5 0 0 0 4.5-4.5c0-3.6-3.9-6.5-9-6.5Z"/><circle cx="8.3" cy="10.2" r="1"/><circle cx="12" cy="7.8" r="1"/><circle cx="15.8" cy="10.2" r="1"/></svg></div>
           <h3>Themes, 3D included</h3>
-          <p>Material You, Orbital, Pixel Perfect, Elite and Nuclear, some with neon 3D widgets. Build your own theme in a dedicated editor: palette, panel shapes, fonts, glow and a WCAG contrast check.</p>
+          <p>Material You, Orbital (Star Citizen Grim HEX), Pixel Perfect, Elite and Cobra Mk II, Nuclear, TESO, Wardogs, Retrowave and Super Four, most with 3D widgets. Build your own theme in a dedicated editor: palette, panel shapes, fonts, glow and a WCAG contrast check.</p>
         </article>
 
         <article class="card">
@@ -171,7 +177,7 @@
         <article class="card">
           <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 4.5 6.8v5.4c0 4 3.1 7.2 7.5 8.3 4.4-1.1 7.5-4.3 7.5-8.3V6.8L12 3.5Z"/><path d="M9.3 12.2l2 2 3.5-4"/></svg></div>
           <h3>Local and private</h3>
-          <p>The Rust server (tokio + axum) runs on your own machine and nothing goes out. Twitch, DonationAlerts and YouTube tokens are encrypted by the OS credential store, and settings are written atomically with backups.</p>
+          <p>The Rust server (tokio + axum) runs on your own machine: settings, history and tokens stay local. What leaves are requests to Twitch, DonationAlerts and YouTube and — if you enable guest cameras — signaling and WebRTC media (a direct P2P link reveals your IP to the peer). Tokens are encrypted by the OS credential store, and settings are written atomically with backups.</p>
         </article>
 
         <article class="card">
@@ -202,6 +208,7 @@
           <li class="chip">Recent events</li>
           <li class="chip">Counter</li>
           <li class="chip">Social banner</li>
+          <li class="chip">Guest camera</li>
           <li class="chip">Executive Hangar timer</li>
           <li class="chip">Mic visualizer</li>
           <li class="chip">Wheel of Fortune</li>
@@ -218,37 +225,52 @@
     <div class="wrap">
       <header class="section-head">
         <h2>Screenshots</h2>
-        <p class="section-sub">The editor, settings, scenes and 3D widgets.</p>
+        <p class="section-sub">Overlays in different themes, the editor, scenes, guest cameras and settings.</p>
       </header>
 
-      <!-- Screenshots converted to WebP from the OSE_pic folder; alt texts verified against the author's description -->
+      <!-- Screenshots captured from the app: the overlay on a black backdrop and the control panel, once per language -->
       <div class="shots">
-        <a class="shot" href="../assets/img/ed-3.webp" data-zoom>
-          <img src="../assets/img/ed-3.webp" alt="Overlay in the Elite theme" loading="lazy" width="1919" height="1079">
+        <a class="shot" href="../assets/img/en/overlay-retrowave.webp" data-zoom>
+          <img src="../assets/img/en/overlay-retrowave.webp" alt="Overlay in the Retrowave theme: donation goal, donation card, recent events, chat and news ticker" loading="lazy" width="1920" height="1080">
         </a>
-        <a class="shot" href="../assets/img/stream-sc.webp" data-zoom>
-          <img src="../assets/img/stream-sc.webp" alt="Overlay in the Orbital theme" loading="lazy" width="1919" height="1079">
+        <a class="shot" href="../assets/img/en/overlay-orbital.webp" data-zoom>
+          <img src="../assets/img/en/overlay-orbital.webp" alt="Overlay in the Orbital theme with Grim HEX 3D widgets" loading="lazy" width="1920" height="1080">
         </a>
-        <a class="shot" href="../assets/img/poll2.webp" data-zoom>
-          <img src="../assets/img/poll2.webp" alt="Poll scene: a live chart" loading="lazy" width="1920" height="1032">
+        <a class="shot" href="../assets/img/en/overlay-elite.webp" data-zoom>
+          <img src="../assets/img/en/overlay-elite.webp" alt="Overlay in the Elite theme with Cobra Mk II 3D widgets" loading="lazy" width="1920" height="1080">
         </a>
-        <a class="shot" href="../assets/img/scene.webp" data-zoom>
-          <img src="../assets/img/scene.webp" alt="The Scenes tab in the control panel" loading="lazy" width="1920" height="1032">
+        <a class="shot" href="../assets/img/en/overlay-nuclear.webp" data-zoom>
+          <img src="../assets/img/en/overlay-nuclear.webp" alt="Overlay in the Nuclear theme" loading="lazy" width="1920" height="1080">
         </a>
-        <a class="shot" href="../assets/img/term.webp" data-zoom>
-          <img src="../assets/img/term.webp" alt="The log terminal in the control panel" loading="lazy" width="1920" height="1032">
+        <a class="shot" href="../assets/img/en/overlay-teso.webp" data-zoom>
+          <img src="../assets/img/en/overlay-teso.webp" alt="Overlay in the TESO theme" loading="lazy" width="1920" height="1080">
         </a>
-        <a class="shot" href="../assets/img/history.webp" data-zoom>
-          <img src="../assets/img/history.webp" alt="The history window: events, sessions and chat" loading="lazy" width="1920" height="1032">
+        <a class="shot" href="../assets/img/en/overlay-pixel.webp" data-zoom>
+          <img src="../assets/img/en/overlay-pixel.webp" alt="Overlay in the Pixel Perfect theme" loading="lazy" width="1920" height="1080">
         </a>
-        <a class="shot" href="../assets/img/wheel-cfg.webp" data-zoom>
-          <img src="../assets/img/wheel-cfg.webp" alt="The open Wheel panel: giveaway settings" loading="lazy" width="1920" height="1032">
+        <a class="shot" href="../assets/img/en/overlay-wardogs.webp" data-zoom>
+          <img src="../assets/img/en/overlay-wardogs.webp" alt="Overlay in the Wardogs theme" loading="lazy" width="1920" height="1080">
         </a>
-        <a class="shot" href="../assets/img/hud-mode.webp" data-zoom>
-          <img src="../assets/img/hud-mode.webp" alt="Editing widgets over the game" loading="lazy" width="1919" height="1079">
+        <a class="shot" href="../assets/img/en/overlay-nebula.webp" data-zoom>
+          <img src="../assets/img/en/overlay-nebula.webp" alt="Overlay in the Material You theme" loading="lazy" width="1920" height="1080">
         </a>
-        <a class="shot" href="../assets/img/remote-full.webp" data-zoom>
-          <img src="../assets/img/remote-full.webp" alt="Web Remote open on a desktop monitor" loading="lazy" width="1919" height="1079">
+        <a class="shot" href="../assets/img/en/themes.webp" data-zoom>
+          <img src="../assets/img/en/themes.webp" alt="Settings, Appearance section: the theme grid and 3D widget switches" loading="lazy" width="1920" height="1080">
+        </a>
+        <a class="shot" href="../assets/img/en/guests.webp" data-zoom>
+          <img src="../assets/img/en/guests.webp" alt="Guest cameras: invite mode, signaling address, STUN and TURN, camera slots" loading="lazy" width="1920" height="1080">
+        </a>
+        <a class="shot" href="../assets/img/en/scenes.webp" data-zoom>
+          <img src="../assets/img/en/scenes.webp" alt="The Scenes tab: the scene list, the Starting soon preview and its settings" loading="lazy" width="1920" height="1080">
+        </a>
+        <a class="shot" href="../assets/img/en/integrations.webp" data-zoom>
+          <img src="../assets/img/en/integrations.webp" alt="Twitch settings: channel, app, channel rewards and the chat bot" loading="lazy" width="1920" height="1080">
+        </a>
+        <a class="shot" href="../assets/img/en/terminal.webp" data-zoom>
+          <img src="../assets/img/en/terminal.webp" alt="The panel terminal with the output of the status, themes and help commands" loading="lazy" width="1920" height="1080">
+        </a>
+        <a class="shot" href="../assets/img/en/help.webp" data-zoom>
+          <img src="../assets/img/en/help.webp" alt="Help by section: about the app, quick start, the editor" loading="lazy" width="1920" height="1080">
         </a>
       </div>
     </div>
@@ -299,6 +321,10 @@
           <p>The overlay is an ordinary web page, so in OBS it is a Browser Source: the URL <code>http://localhost:8710/overlay/overlay.html</code>, resolution 1920×1080, source FPS 30. Turn on "Shutdown source when not visible" — hidden scenes then fall asleep completely.</p>
         </details>
         <details>
+          <summary>How do I connect a guest in multicam?</summary>
+          <p>In Settings → Guest cameras create an invite for a slot and send the link to the guest — they paste it into OSE and you press Allow. On a LAN the connection is direct; over the internet you need a signaling service, but the media still goes directly. If either side sits behind a symmetric NAT or CGNAT (mobile internet), the direct path will not form: the TURN fields are there, but no relay is bundled — you need your own server, for example coturn. A VPN gets in the way too: its exit usually behaves as a symmetric NAT.</p>
+        </details>
+        <details>
           <summary>Do I need Twitch and DonationAlerts accounts?</summary>
           <p>Chat is read anonymously — the channel name is enough. Alerts for follows, subscriptions, bits and donations need your own apps: a Client ID and Client Secret from dev.twitch.tv and donationalerts.com, plus authorization. Posting to chat also needs Twitch connected.</p>
         </details>
@@ -316,7 +342,7 @@
         </details>
         <details>
           <summary>How much does the app cost?</summary>
-          <p>Nothing. The project is open and distributed under the GPL license — the code, the builds and the change history live in the <a href="https://github.com/Halantar-git/open-stream-environment">repository on GitHub</a>.</p>
+          <p>Nothing. The project is open, distributed under the GPL license, and uses only open, free resources — the code, the builds and the change history live in the <a href="https://github.com/Halantar-git/open-stream-environment">repository on GitHub</a>.</p>
         </details>
         <details>
           <summary>How do I report a bug?</summary>
