@@ -34,7 +34,8 @@ import time
 from PIL import Image
 
 # Снимок панели: без потерь, интерфейсный текст.
-PANEL = ['editor', 'themes', 'guests', 'integrations', 'scenes', 'terminal', 'help']
+PANEL = ['editor', 'themes', 'guests', 'integrations', 'scenes', 'scene-guests',
+         'history', 'terminal', 'help', 'wheel', 'poll']
 
 # Оверлей в теме: качество 90, подложка — чёрная сцена.
 THEMES = ['nebula', 'orbital', 'elite', 'pixel', 'nuclear', 'teso', 'wardogs', 'retrowave']
