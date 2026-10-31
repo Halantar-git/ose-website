@@ -305,24 +305,29 @@
     <div class="wrap">
       <header class="section-head">
         <h2>Quick start</h2>
-        <p class="section-sub">From <code>npm install</code> to an overlay in OBS in three steps.</p>
+        <p class="section-sub">From install to an overlay in OBS in four steps. No console and no file editing.</p>
       </header>
 
       <ol class="steps">
         <li>
           <span class="step-num">1</span>
-          <h3>Install</h3>
-          <p>Rust (stable) is required, plus Node.js 22.12+ for the tests. Run <code>npm install</code>, then <code>npm run tauri:dev</code> — the control panel window opens.</p>
+          <h3>Install OSE</h3>
+          <p>Download a build from the Releases page: for Windows an NSIS installer or MSI, for Linux AppImage, deb or rpm, for macOS a dmg for Apple Silicon. Launch it — the control panel opens.</p>
         </li>
         <li>
           <span class="step-num">2</span>
-          <h3>Add the overlay to OBS</h3>
-          <p>Sources → + → Browser Source: the URL <code>http://localhost:8710/overlay/overlay.html</code>, resolution 1920×1080, source FPS 30. The background is transparent out of the box.</p>
+          <h3>Enable the WebSocket in OBS</h3>
+          <p>The server is built into OBS 28 and newer: Tools → WebSocket Server Settings (in the Russian UI, Сервис → Настройки сервера WebSocket). Make sure it is on and copy the password — the default port is 4455.</p>
         </li>
         <li>
           <span class="step-num">3</span>
+          <h3>Connect OSE to OBS</h3>
+          <p>In the app open Settings → OBS WebSocket, turn the integration on, enter the port and password and wait for the “Connected” status. Then press “Set up scenes in OBS” — the app creates the scenes and browser sources itself, with the overlay URL and canvas size.</p>
+        </li>
+        <li>
+          <span class="step-num">4</span>
           <h3>Build your layout</h3>
-          <p>Drag widgets in from the library, set the grid and the canvas aspect ratio, save the layout as a preset. Scenes and intermission videos live on their own tabs.</p>
+          <p>Drag widgets in from the library, set the grid and the canvas aspect, save the layout as a preset. In OBS, add your game capture to the main scene and move it below “OSE Overlay”.</p>
         </li>
       </ol>
     </div>
@@ -342,7 +347,7 @@
         </details>
         <details>
           <summary>How do I add the overlay to OBS?</summary>
-          <p>The overlay is an ordinary web page, so in OBS it is a Browser Source: the URL <code>http://localhost:8710/overlay/overlay.html</code>, resolution 1920×1080, source FPS 30. Turn on "Shutdown source when not visible" — hidden scenes then fall asleep completely.</p>
+          <p>The overlay is an ordinary web page, so in OBS it is a Browser Source: the URL <code>http://localhost:8710/overlay/overlay.html</code>, resolution 1920×1080, source FPS 30. Turn on "Shutdown source when not visible" — hidden scenes then fall asleep completely. If the OBS WebSocket is connected, it is easier to press “Set up scenes in OBS” in the app settings: it creates the scenes and sources with the right URL and size itself, and this way stays for manual setup.</p>
         </details>
         <details>
           <summary>How do I connect a guest in multicam?</summary>
