@@ -105,7 +105,7 @@ npx ose-plugin check .</code></pre>
     <div class="wrap">
       <div class="section-head">
         <h2>Quick start</h2>
-        <p class="section-sub">Node 18+ is required. The SDK lives in npm as <code>ose-plugin-sdk</code> — no need to clone the repository.</p>
+        <p class="section-sub">Node 18+ is required. The SDK lives in npm as <code>ose-plugin</code> — no need to clone the repository.</p>
       </div>
 
       <pre><code>npx ose-plugin create hello                  # widget package in ./hello
@@ -280,7 +280,7 @@ npx ose-plugin check config/plugins
 npx ose-plugin check . --json   # for scripts and CI</code></pre>
 
       <p>The SDK ships <code>index.d.ts</code> — global types for <code>window.OSE</code>, <code>BaseWidget</code> and events. Add this to the top of your JS:</p>
-      <pre><code>/// &lt;reference path="node_modules/ose-plugin-sdk/index.d.ts" /&gt;
+      <pre><code>/// &lt;reference path="node_modules/ose-plugin/index.d.ts" /&gt;
 // @ts-check</code></pre>
       <p>The editor starts suggesting <code>this.config</code>, hooks and event payloads. Manifests are also described by JSON schemas in <code>sdk/schema/</code> — add a <code>$schema</code> link and the editor validates <code>widget.json</code> too.</p>
     </div>
@@ -296,7 +296,7 @@ npx ose-plugin check . --json   # for scripts and CI</code></pre>
         <li><a href="https://github.com/Halantar-git/open-stream-environment/blob/HEAD/docs/plugin-api.md">Package format</a> — the loader contract and the <code>/api/plugins</code> response.</li>
         <li><a href="https://github.com/Halantar-git/open-stream-environment/blob/HEAD/docs/api.md">App API</a> — the local HTTP server and the WebSocket bus.</li>
         <li><a href="https://github.com/Halantar-git/open-stream-environment/tree/HEAD/docs/examples/plugins">Examples</a> — the ready <code>hello</code> widget and <code>plain-theme</code> theme.</li>
-        <li><a href="https://www.npmjs.com/package/ose-plugin-sdk">ose-plugin-sdk on npm</a> — the SDK package.</li>
+        <li><a href="https://www.npmjs.com/package/ose-plugin">ose-plugin on npm</a> — the SDK package.</li>
       </ul>
 
       <div class="cta-panel">
