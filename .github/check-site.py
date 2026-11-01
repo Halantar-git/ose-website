@@ -9,8 +9,9 @@
   * все локальные ссылки и картинки из HTML существуют на диске;
   * размеры <img> в разметке совпадают с размерами файлов (иначе вёрстка
     прыгает при загрузке, а картинка растягивается);
-  * og:image совпадает по размеру со своим файлом;
-  * canonical и hreflang ведут туда, куда обещают, у обеих языковых версий;
+  * canonical и hreflang ведут туда, куда обещают, у обеих языковых версий
+    каждой страницы;
+  * og:image у каждой страницы совпадает по размеру со своим файлом;
   * со страниц не уходит ни одного своего запроса к чужим серверам;
   * места для подстановки релиза (версия, дата, кнопки) на месте;
   * stamp-release.py действительно подставляет данные тестового релиза —
@@ -31,7 +32,10 @@ import tempfile
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Лендинги обеих языковых версий и страницы политики
 INDEXES = ['index.html', 'en/index.html']
-PAGES = INDEXES + ['privacy.html', 'en/privacy.html']
+PAGES = INDEXES + ['privacy.html', 'en/privacy.html',
+                   'developers.html', 'en/developers.html']
+# Карточки для соцсетей нужны лендингам и странице SDK; у политики её нет намеренно
+SOCIAL = INDEXES + ['developers.html', 'en/developers.html']
 
 LINK = re.compile(r'(?:src|href)="([^"]*)"')
 IMG = re.compile(r'<img\b[^>]*>', re.IGNORECASE)
@@ -198,7 +202,8 @@ def check_og_image(page, html):
 
 def check_alternates(page, html):
     """У каждой страницы должен быть canonical на свой адрес и обе языковые версии."""
-    suffix = '' if page in INDEXES else 'privacy.html'
+    name = page.rsplit('/', 1)[-1]
+    suffix = '' if name == 'index.html' else name
     expected = {
         'ru': f'https://ose-overlay.ru/{suffix}',
         'en': f'https://ose-overlay.ru/en/{suffix}',
@@ -283,13 +288,17 @@ def main():
         if not os.path.isfile(os.path.join(ROOT, page)):
             fail(f'нет страницы {page}')
             continue
+        html = read(os.path.join(ROOT, page))
         check_links(page)
         check_image_sizes(page)
-
-    index_html = {page: read(os.path.join(ROOT, page)) for page in INDEXES}
-    for page, html in index_html.items():
-        check_og_image(page, html)
         check_alternates(page, html)
+
+    for page in SOCIAL:
+        check_og_image(page, read(os.path.join(ROOT, page)))
+
+    # Версия, дата и кнопки скачивания — только на лендингах: им подстановщик и нужен
+    for page in INDEXES:
+        html = read(os.path.join(ROOT, page))
         check_placeholders(page, html)
         check_stamp(page, html)
 

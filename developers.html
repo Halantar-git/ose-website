@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>SDK плагинов — Open Stream Environment</title>
+<meta name="description" content="SDK для виджетов и тем Open Stream Environment: npx ose-plugin create собирает рабочий пакет, check проверяет манифест до установки, а типы window.OSE и JSON-схемы подсказывают в редакторе.">
+<link rel="canonical" href="https://ose-overlay.ru/developers.html">
+<link rel="alternate" hreflang="ru" href="https://ose-overlay.ru/developers.html">
+<link rel="alternate" hreflang="en" href="https://ose-overlay.ru/en/developers.html">
+<link rel="alternate" hreflang="x-default" href="https://ose-overlay.ru/developers.html">
+
+<meta name="theme-color" content="#F9F9FF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="assets/img/app.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Open Stream Environment">
+<meta property="og:title" content="SDK плагинов — Open Stream Environment">
+<meta property="og:description" content="Свои виджеты и темы для OSE: заготовка одной командой, проверка манифеста до установки, типы window.OSE для редактора.">
+<meta property="og:url" content="https://ose-overlay.ru/developers.html">
+<meta property="og:image" content="https://ose-overlay.ru/assets/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Open Stream Environment — SDK виджетов и тем">
+<meta property="og:locale" content="ru_RU">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="stylesheet" href="assets/css/style.css">
+
+<script>
+  try {
+    var t = localStorage.getItem('ose-theme');
+    if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+  } catch (e) {}
+  if (window.scrollY <= 8) document.documentElement.classList.add('at-top');
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Перейти к содержимому</a>
+
+<header class="site-header" id="header">
+  <div class="wrap header-inner">
+    <a class="brand" href="./" aria-label="Open Stream Environment — на главную">
+      <img class="brand-mark" src="assets/img/app.svg" alt="" width="32" height="32">
+      <span class="brand-name">Open Stream Environment</span>
+    </a>
+
+    <nav class="nav" id="nav" aria-label="Основная навигация">
+      <a href="index.html#features">Возможности</a>
+      <a href="index.html#screens">Скриншоты</a>
+      <a href="index.html#faq">Вопросы</a>
+      <a href="developers.html" aria-current="page">Разработчикам</a>
+      <a class="btn btn-primary nav-cta" href="index.html#download">Скачать</a>
+    </nav>
+
+    <div class="header-actions">
+      <a class="lang-btn" href="en/developers.html" hreflang="en" lang="en" title="English version">EN</a>
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Переключить тему">
+        <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M18.7 5.3l-1.8 1.8M7.1 16.9l-1.8 1.8"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg>
+      </button>
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="Меню" aria-expanded="false" aria-controls="nav">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <p class="badge">SDK пакетов · apiVersion 1</p>
+        <h1>Свои виджеты и темы — без сборки приложения</h1>
+        <p class="lead">OSE подхватывает пакеты из папки: виджет — это <code>widget.json</code>, JS-класс и CSS, тема — токены и CSS. SDK собирает рабочую заготовку, проверяет её теми же правилами, что загрузчик приложения, и даёт типы <code>window.OSE</code> для автодополнения.</p>
+
+        <div class="cta-row">
+          <a class="btn btn-primary btn-lg" href="#quickstart">Быстрый старт</a>
+          <a class="btn btn-ghost btn-lg" href="https://github.com/Halantar-git/open-stream-environment/blob/HEAD/sdk/README.md">Документация SDK</a>
+        </div>
+
+        <ul class="hero-points">
+          <li>Ничего не пересобирать — папка в данных пользователя</li>
+          <li>JavaScript и CSS, как на обычной веб-странице</li>
+          <li>Проверка манифеста до установки</li>
+        </ul>
+      </div>
+
+      <div class="hero-visual">
+        <pre><code>npx ose-plugin create hello
+npx ose-plugin check .</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-soft" id="quickstart">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Быстрый старт</h2>
+        <p class="section-sub">Нужен Node 18+. SDK лежит в npm (<code>ose-plugin-sdk</code>) — репозиторий клонировать не обязательно.</p>
+      </div>
+
+      <pre><code>npx ose-plugin create hello                  # пакет виджета в ./hello
+npx ose-plugin create plain --theme --name Plain
+npx ose-plugin check .                       # проверка до установки
+npx ose-plugin check config/plugins --json   # все пакеты, вывод для CI</code></pre>
+
+      <p>В самом репозитории OSE те же действия без npm: <code>node sdk/create.mjs</code> и <code>node sdk/validate.mjs</code>.</p>
+
+      <ol class="steps">
+        <li>
+          <span class="step-num">1</span>
+          <h3>Создайте пакет</h3>
+          <p>Заготовка уже рабочая: манифест, класс виджета, стили и README с инструкцией. Дальше остаётся переписать содержимое под себя.</p>
+        </li>
+        <li>
+          <span class="step-num">2</span>
+          <h3>Положите в каталог пакетов</h3>
+          <p>Разработка — <code>config/plugins/&lt;id&gt;/</code>; установленное приложение — <code>%APPDATA%\com.openstreamenvironment.app\plugins\</code> (на других системах — каталог данных приложения).</p>
+        </li>
+        <li>
+          <span class="step-num">3</span>
+          <h3>Перезапустите OSE</h3>
+          <p>Манифесты читаются при старте. Правки кода и CSS сервер отдаёт с диска — здесь хватает обновить источник в OBS.</p>
+        </li>
+        <li>
+          <span class="step-num">4</span>
+          <h3>Добавьте виджет из библиотеки</h3>
+          <p>Карточка появится в колонке виджетов; тема — в «Настройки → Оформление» с пометкой пакета.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Что внутри пакета</h2>
+        <p class="section-sub">Один каталог — один пакет. Манифест выбирает тип: <code>widget.json</code> для виджета, <code>theme.json</code> для темы.</p>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>Виджет</h3>
+          <p>Класс наследуется от <code>OSE.BaseWidget</code>: движок сам создаёт элемент, выставляет геометрию и зовёт <code>render()</code> при монтировании и изменении настроек.</p>
+          <p><code>widget.json</code> · <code>widget.js</code> · <code>widget.css</code> · <code>README.md</code></p>
+        </div>
+        <div class="card">
+          <h3>Тема</h3>
+          <p>Токены <code>--md-*</code>, <code>--font-*</code> и <code>--panel-*</code> плюс необязательный CSS под своим <code>data-theme</code>. Тема применяется на оверлее, сценах и заставке.</p>
+          <p><code>theme.json</code> · <code>theme.css</code> · <code>README.md</code></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-soft" id="widget">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Виджет</h2>
+        <p class="section-sub">Схема настроек рисует инспектор сама, вручную верстать поля не нужно. В <code>this.config</code> приходят значения из настроек.</p>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>widget.json</h3>
+          <pre><code>{
+  "apiVersion": 1,
+  "kind": "widget",
+  "id": "hello",
+  "name": "Привет",
+  "entry": "widget.js",
+  "styles": ["widget.css"],
+  "defaultGeometry": { "x": 40, "y": 42, "w": 20, "h": 10 },
+  "settings": {
+    "text": {
+      "type": "string",
+      "label": "Текст",
+      "default": "Привет, эфир!"
+    }
+  }
+}</code></pre>
+        </div>
+        <div class="card">
+          <h3>widget.js</h3>
+          <pre><code>(function () {
+  const OSE = window.OSE;
+  if (!OSE) return;
+
+  class HelloWidget extends OSE.BaseWidget {
+    render() {
+      if (!this.element) return;
+      this.element.textContent =
+        String(this.config.text || "Привет");
+    }
+  }
+
+  OSE.defineWidget("hello", HelloWidget);
+})();</code></pre>
+        </div>
+      </div>
+
+      <h3>Настройки</h3>
+      <p>Инспектор понимает семь типов полей; значение по умолчанию берётся из <code>default</code>, а у <code>select</code> должно быть одним из <code>options</code> — иначе приложение молча возьмёт первый вариант.</p>
+      <ul class="dev-list">
+        <li><code>string</code> — однострочный текст;</li>
+        <li><code>text</code> — многострочный текст;</li>
+        <li><code>number</code> — число;</li>
+        <li><code>range</code> — ползунок с <code>min</code>, <code>max</code> и <code>step</code>;</li>
+        <li><code>color</code> — цвет;</li>
+        <li><code>boolean</code> — переключатель;</li>
+        <li><code>select</code> — список вариантов <code>{ "value", "label" }</code>.</li>
+      </ul>
+
+      <h3>Жизненный цикл и события</h3>
+      <p>Движок сам снимает подписки и таймеры при удалении виджета. События — те же кадры, что летят в оверлей: <code>ALERT</code>, <code>CHAT_MESSAGE</code>, <code>RECENT_EVENT</code>, <code>GOAL_UPDATE</code>, <code>STAT_UPDATE</code>, <code>SESSION_STATS</code>, <code>THEME_UPDATE</code>.</p>
+      <pre><code>onMount() {
+  this.subscribe(OSE.EVENT_TYPES.ALERT, (alert) =&gt; {
+    this.element.textContent = `${alert.kind}: ${alert.user}`;
+  });
+  this.every(() =&gt; this.render(), 1000);
+}</code></pre>
+      <p>Кроме того, доступны <code>this.geometry</code>, <code>this.element</code>, <code>this.canvas</code> и <code>this.ctx</code>, <code>this.startRenderLoop(fps)</code>, <code>this.context.readCssVar("--md-primary")</code> и <code>OSE.asset(id, файл)</code> для файлов пакета.</p>
+    </div>
+  </section>
+
+  <section class="section" id="theme">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Тема</h2>
+        <p class="section-sub">Тема появляется в списке как <code>plugin:&lt;id&gt;</code>. Править её из панели нельзя — источник правды в пакете.</p>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>theme.json</h3>
+          <pre><code>{
+  "apiVersion": 1,
+  "kind": "theme",
+  "id": "plain",
+  "name": "Plain",
+  "tokens": {
+    "--md-primary": "#7aa2f7",
+    "--md-surface": "#0b1020",
+    "--md-on-surface": "#e6edf7"
+  },
+  "css": "theme.css"
+}</code></pre>
+        </div>
+        <div class="card">
+          <h3>theme.css</h3>
+          <p>Правила пишите под своим <code>data-theme</code>, иначе они протекут в другие темы и в панель управления.</p>
+          <pre><code>[data-theme="plugin:plain"] .widget-instance {
+  border-radius: 4px;
+}</code></pre>
+        </div>
+      </div>
+      <p>Шрифт попадает в эфир, поэтому берите только свободные лицензии, разрешающие коммерческое использование (SIL OFL и подобные), и кладите текст лицензии рядом с файлом.</p>
+    </div>
+  </section>
+
+  <section class="section section-soft" id="check">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Проверка и типы</h2>
+        <p class="section-sub">Ошибку в манифесте лучше увидеть в терминале, чем после перезапуска приложения с пустой карточкой.</p>
+      </div>
+
+      <p><code>ose-plugin check</code> повторяет правила загрузчика: <code>id</code> совпадает с именем папки, <code>entry</code> и <code>styles</code> существуют и не выходят за пакет, у настроек известные типы, у темы есть токены с <code>--</code>. Предупреждения (например, <code>default</code> не из <code>options</code>) установку не блокируют, но обычно это опечатка.</p>
+      <pre><code>npx ose-plugin check .
+npx ose-plugin check config/plugins
+npx ose-plugin check . --json   # для скриптов и CI</code></pre>
+
+      <p>В пакете SDK есть <code>index.d.ts</code> — глобальные типы <code>window.OSE</code>, <code>BaseWidget</code> и событий. Добавьте в начало своего JS:</p>
+      <pre><code>/// &lt;reference path="node_modules/ose-plugin-sdk/index.d.ts" /&gt;
+// @ts-check</code></pre>
+      <p>Редактор начнёт подсказывать <code>this.config</code>, хуки и нагрузку событий. Манифесты описаны и JSON-схемами в <code>sdk/schema/</code> — при добавлении ссылки <code>$schema</code> редактор проверит и <code>widget.json</code>.</p>
+    </div>
+  </section>
+
+  <section class="section" id="links">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Документация и примеры</h2>
+      </div>
+      <ul class="dev-list dev-links">
+        <li><a href="https://github.com/Halantar-git/open-stream-environment/blob/HEAD/sdk/README.md">Руководство по SDK</a> — команды, манифест, настройки, события и темы.</li>
+        <li><a href="https://github.com/Halantar-git/open-stream-environment/blob/HEAD/docs/plugin-api.md">Формат пакетов</a> — контракт загрузчика и структура ответа <code>/api/plugins</code>.</li>
+        <li><a href="https://github.com/Halantar-git/open-stream-environment/blob/HEAD/docs/api.md">API приложения</a> — локальный HTTP-сервер и шина WebSocket.</li>
+        <li><a href="https://github.com/Halantar-git/open-stream-environment/tree/HEAD/docs/examples/plugins">Примеры</a> — готовый виджет <code>hello</code> и тема <code>plain-theme</code>.</li>
+        <li><a href="https://www.npmjs.com/package/ose-plugin-sdk">ose-plugin-sdk в npm</a> — пакет SDK.</li>
+      </ul>
+
+      <div class="cta-panel">
+        <h2>Есть идея виджета?</h2>
+        <p>Начните с <code>npx ose-plugin create</code> и пришлите ссылку в <a href="https://github.com/Halantar-git/open-stream-environment/issues">issues репозитория</a>. Пакет исполняется в странице оверлея с полными правами, поэтому ставить можно только доверенный код — песочницы пока нет.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <img class="brand-mark" src="assets/img/app.svg" alt="" width="24" height="24">
+      <span>Open Stream Environment</span>
+    </div>
+
+    <nav class="footer-nav" aria-label="Ссылки в подвале">
+      <a href="index.html#features">Возможности</a>
+      <a href="index.html#faq">Вопросы</a>
+      <a href="developers.html">Разработчикам</a>
+      <a href="https://github.com/Halantar-git/open-stream-environment">GitHub</a>
+      <a href="https://github.com/Halantar-git/open-stream-environment/blob/HEAD/CHANGELOG.md">История версий</a>
+      <a href="https://github.com/Halantar-git/open-stream-environment/issues">Сообщить об ошибке</a>
+      <a href="privacy.html">Политика конфиденциальности</a>
+      <a href="en/developers.html" hreflang="en" lang="en">English version</a>
+    </nav>
+
+    <p class="footer-legal">© <span id="year">2026</span> Halantar · Open Stream Environment · <a href="https://github.com/Halantar-git/open-stream-environment/blob/HEAD/LICENSE">лицензия GPL</a></p>
+  </div>
+</footer>
+
+<script src="assets/js/main.js" defer></script>
+</body>
+</html>

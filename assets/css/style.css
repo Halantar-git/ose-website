@@ -509,6 +509,7 @@ html.at-top .site-header { background: transparent; }
 
 /* ---------- Elevated cards ---------- */
 .grid { display: grid; gap: clamp(16px, 2.2vw, 24px); }
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
 .grid-3 { grid-template-columns: repeat(3, 1fr); }
 
 .card {
@@ -796,6 +797,33 @@ code {
   overflow-wrap: anywhere;
 }
 
+/* ---------- Блок кода (страница SDK) ---------- */
+pre {
+  margin: 0 0 16px;
+  padding: 16px 18px;
+  border-radius: var(--md-sys-shape-corner-medium);
+  background: var(--md-sys-color-surface-container-high);
+  color: var(--md-sys-color-on-surface);
+  font: 500 13px/20px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  overflow-x: auto;
+}
+pre code {
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  font: inherit;
+  overflow-wrap: normal;
+}
+/* В hero код стоит вместо скриншота — без нижнего отступа, чтобы не тянуть блок */
+.hero-visual pre { margin: 0; }
+
+/* ---------- Страница SDK ---------- */
+.dev-list { margin: 0 0 16px; padding-left: 22px; }
+.dev-list li { margin-bottom: 8px; }
+.dev-list a { text-decoration: underline; }
+.cta-panel code { background: color-mix(in srgb, currentColor 12%, transparent); }
+.cta-panel a { text-decoration: underline; }
+
 /* ---------- Утилиты ---------- */
 .text-center { text-align: center; }
 .mx-auto { margin-inline: auto; }
@@ -870,7 +898,7 @@ code {
 
 @media (max-width: 1000px) {
   .hero-inner { grid-template-columns: 1fr; }
-  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .grid-2, .grid-3 { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 900px) {
@@ -906,7 +934,7 @@ code {
 
 @media (max-width: 600px) {
   .wrap { padding-inline: 16px; }
-  .grid-3 { grid-template-columns: 1fr; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
   .hero-points { flex-direction: column; gap: 8px; }
   /* На узком экране FAB сжимается до 56×56: подпись только отнимает место */
   .to-top { width: 56px; padding: 0; }
