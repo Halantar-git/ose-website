@@ -111,9 +111,10 @@ npx ose-plugin check .</code></pre>
       <pre><code>npx ose-plugin create hello                  # widget package in ./hello
 npx ose-plugin create plain --theme --name Plain
 npx ose-plugin check .                       # validate before install
-npx ose-plugin check config/plugins --json   # every package, CI-friendly</code></pre>
+npx ose-plugin check config/plugins --json   # every package, CI-friendly
+npx ose-plugin pack hello                    # hello.zip for Install from ZIP</code></pre>
 
-      <p>The same commands live in the OSE repository without npm: <code>node sdk/create.mjs</code> and <code>node sdk/validate.mjs</code>.</p>
+      <p>The same commands live in the OSE repository without npm: <code>node sdk/create.mjs</code>, <code>node sdk/validate.mjs</code> and <code>node sdk/pack.mjs</code>.</p>
 
       <ol class="steps">
         <li>
@@ -124,7 +125,7 @@ npx ose-plugin check config/plugins --json   # every package, CI-friendly</code>
         <li>
           <span class="step-num">2</span>
           <h3>Drop it into the packages folder</h3>
-          <p>Development — <code>config/plugins/&lt;id&gt;/</code>; installed app — <code>%APPDATA%\com.openstreamenvironment.app\plugins\</code> (on other systems, the app data directory).</p>
+          <p>Development — <code>config/plugins/&lt;id&gt;/</code>; installed app — <code>%APPDATA%\com.openstreamenvironment.app\plugins\</code> (on other systems, the app data directory). You can skip the manual folder: build an archive with <code>ose-plugin pack</code> and use Install from ZIP in Settings → Packages.</p>
         </li>
         <li>
           <span class="step-num">3</span>

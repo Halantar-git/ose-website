@@ -110,9 +110,10 @@ npx ose-plugin check .</code></pre>
       <pre><code>npx ose-plugin create hello                  # пакет виджета в ./hello
 npx ose-plugin create plain --theme --name Plain
 npx ose-plugin check .                       # проверка до установки
-npx ose-plugin check config/plugins --json   # все пакеты, вывод для CI</code></pre>
+npx ose-plugin check config/plugins --json   # все пакеты, вывод для CI
+npx ose-plugin pack hello                    # hello.zip для «Установить из ZIP»</code></pre>
 
-      <p>В самом репозитории OSE те же действия без npm: <code>node sdk/create.mjs</code> и <code>node sdk/validate.mjs</code>.</p>
+      <p>В самом репозитории OSE те же действия без npm: <code>node sdk/create.mjs</code>, <code>node sdk/validate.mjs</code> и <code>node sdk/pack.mjs</code>.</p>
 
       <ol class="steps">
         <li>
@@ -123,7 +124,7 @@ npx ose-plugin check config/plugins --json   # все пакеты, вывод �
         <li>
           <span class="step-num">2</span>
           <h3>Положите в каталог пакетов</h3>
-          <p>Разработка — <code>config/plugins/&lt;id&gt;/</code>; установленное приложение — <code>%APPDATA%\com.openstreamenvironment.app\plugins\</code> (на других системах — каталог данных приложения).</p>
+          <p>Разработка — <code>config/plugins/&lt;id&gt;/</code>; установленное приложение — <code>%APPDATA%\com.openstreamenvironment.app\plugins\</code> (на других системах — каталог данных приложения). Можно и без ручной папки: соберите архив через <code>ose-plugin pack</code> и нажмите «Установить из ZIP» в «Настройки → Пакеты».</p>
         </li>
         <li>
           <span class="step-num">3</span>
