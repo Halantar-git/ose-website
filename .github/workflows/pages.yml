@@ -52,7 +52,14 @@ jobs:
         uses: actions/upload-pages-artifact@v5
         with:
           path: .
+          # Имя с номером попытки: при повторном запуске job'а artifact
+          # прошлой попытки остаётся в том же run, и deploy-pages падал бы
+          # с «Multiple artifacts named github-pages». Своё имя у каждой
+          # попытки разводит их, а deploy-pages берёт именно наше.
+          name: github-pages-${{ github.run_attempt }}
 
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v5
+        with:
+          artifact_name: github-pages-${{ github.run_attempt }}
